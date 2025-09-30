@@ -5,9 +5,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
-        mono: ["var(--font-geist-mono)"],
-        roboto: ["var(--font-roboto)", "sans-serif"],
+        sans: ["var(--font-comfortaa)", "sans-serif"],
+        mono: ["var(--font-comfortaa)", "monospace"],
+        comfortaa: ["var(--font-comfortaa)", "sans-serif"],
       },
     },
   },
