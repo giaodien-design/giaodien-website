@@ -1,107 +1,99 @@
-"use client";
+"use client"
 
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { IconAlertCircle, IconAlignBoxBottomRightFilled } from "@tabler/icons-react"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp"
+import type { AppWithPreview, ApiResponse } from "@/types"
 
 export default function Home() {
-  return (
-    <div>
-      <Button variant="destructive">Destructive</Button>
-      <Button variant="secondary">Secondary</Button>
+  const [apps, setApps] = useState<AppWithPreview[]>([])
+  const [loading, setLoading] = useState(true)
 
-      <IconAlignBoxBottomRightFilled />
+  useEffect(() => {
+    fetch("/api/apps")
+      .then((res) => res.json())
+      .then((data: ApiResponse<AppWithPreview[]>) => {
+        if (data.success) {
+          setApps(data.data)
+        }
+      })
+      .catch((error) => console.error("Error:", error))
+      .finally(() => setLoading(false))
+  }, [])
 
-      <Accordion type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-      
-      <Accordion type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <Alert variant="default">
-        <IconAlignBoxBottomRightFilled />
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>
-          You can add components and dependencies to your app using the cli.
-        </AlertDescription>
-      </Alert>
-
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/components">Components</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <div className="flex flex-col space-y-3">
-        <Skeleton className="h-[100px] w-[250px] rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[250px]" />
-          <Skeleton className="h-4 w-[200px]" />
+  if (loading) {
+    return (
+      <div className="container mx-auto p-8">
+        <h1 className="text-3xl font-bold mb-8">UI Showcase</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border rounded-lg p-6">
+              <Skeleton className="h-8 w-32 mb-4" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          ))}
         </div>
       </div>
+    )
+  }
 
-      <InputOTP maxLength={9}>
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-        </InputOTPGroup>
-        <InputOTPSeparator />
-        <InputOTPGroup>
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
-        </InputOTPGroup>
-        <InputOTPSeparator />
-        <InputOTPGroup>
-          <InputOTPSlot index={6} />
-          <InputOTPSlot index={7} />
-          <InputOTPSlot index={8} />
-        </InputOTPGroup>
-      </InputOTP>
+  return (
+    <div className="container mx-auto p-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">UI Showcase</h1>
+        <p className="text-muted-foreground">
+          Explore UI/UX designs from popular mobile apps
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {apps.map((app) => (
+          <div
+            key={app.id}
+            className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
+            style={{
+              borderTopWidth: "4px",
+              borderTopColor: app.brandColor || "#000",
+            }}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-semibold mb-1">{app.name}</h2>
+                <span className="text-sm text-muted-foreground">
+                  {app.platform}
+                </span>
+              </div>
+              {app.category && (
+                <span className="text-xs bg-secondary px-2 py-1 rounded">
+                  {app.category}
+                </span>
+              )}
+            </div>
+
+            {app.description && (
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                {app.description}
+              </p>
+            )}
+
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                {app._count.screens} screens
+              </span>
+              <Button variant="outline" size="sm">
+                View Details
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {apps.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No apps found</p>
+        </div>
+      )}
     </div>
-  );
+  )
 }
