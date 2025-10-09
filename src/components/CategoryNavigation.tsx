@@ -4,80 +4,57 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 
 const primaryTabs = [
-  "App",
-  "Screen"
+  { id: "app", label: "Ứng dụng" },
+  { id: "screen", label: "Screen type" }
 ]
 
 const secondaryTabs = [
-  "Di chuyển",
-  "Tài chính", 
-  "Giải trí",
-  "Đời sống",
-  "Hiệu suất"
+  { id: "di-chuyen", label: "Di chuyển" },
+  { id: "tai-chinh", label: "Tài chính" }, 
+  { id: "giai-tri", label: "Giải trí" },
+  { id: "doi-song", label: "Đời sống" },
+  { id: "hieu-suat", label: "Hiệu suất" }
 ]
 
 export function CategoryNavigation() {
-  const [activePrimary, setActivePrimary] = useState("App")
-  const [activeSecondary, setActiveSecondary] = useState("Di chuyển")
+  const [activePrimary, setActivePrimary] = useState("app")
+  const [activeSecondary, setActiveSecondary] = useState("di-chuyen")
 
   return (
-    <div className="px-20 py-6">
-      {/* Primary Tabs - Toggle Style with Sliding Animation */}
-      <div className="inline-flex bg-gray-100 rounded-lg p-1 mb-4 relative">
-        {/* Sliding Background */}
-        <div 
-          className="absolute bg-white rounded-md shadow-sm transition-all duration-300 ease-in-out"
-          style={{
-            width: `calc(50% - 2px)`,
-            height: 'calc(100% - 2px)',
-            left: activePrimary === "App" ? '2px' : 'calc(50% + 2px)',
-            top: '2px'
-          }}
-        />
-        
+    <div className="flex flex-col gap-6 items-start px-20">
+      {/* Primary Tabs */}
+      <div className="inline-flex bg-neutral-100 rounded-xl p-[3px]">
         {primaryTabs.map((tab) => (
           <button
-            key={tab}
-            onClick={() => setActivePrimary(tab)}
+            key={tab.id}
+            onClick={() => setActivePrimary(tab.id)}
             className={cn(
-              "relative z-10 flex-1 px-6 py-2 text-sm font-medium rounded-md transition-colors duration-200 text-center",
-              activePrimary === tab
-                ? "text-black"
-                : "text-gray-600 hover:text-gray-800"
+              "flex flex-col items-center justify-center px-4 py-3 rounded-lg text-sm font-semibold transition-colors",
+              activePrimary === tab.id
+                ? "bg-white border border-[#ebebeb] text-neutral-900 shadow-sm"
+                : "text-neutral-900 hover:bg-white/60 hover:text-neutral-950"
             )}
           >
-            {tab}
+            {tab.label}
           </button>
         ))}
       </div>
       
       {/* Secondary Tabs */}
-      <div className="relative">
-        {/* Continuous underline background */}
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-300"></div>
-        
-        {/* Animated underline */}
-        <div 
-          className="absolute bottom-0 h-0.5 bg-black transition-all duration-300 ease-in-out"
-          style={{
-            width: '80px',
-            left: `${secondaryTabs.indexOf(activeSecondary) * 80}px`
-          }}
-        />
-        
-        <div className="flex">
+      <div className="border-b-2 border-[#ebebeb] w-full">
+        <div className="flex items-center">
           {secondaryTabs.map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveSecondary(tab)}
+              key={tab.id}
+              onClick={() => setActiveSecondary(tab.id)}
               className={cn(
-                "py-2 text-sm font-medium transition-colors relative w-20",
-                activeSecondary === tab
-                  ? "text-black"
-                  : "text-gray-500 hover:text-gray-700"
+                "flex flex-col items-center justify-center px-4 pt-3 pb-[10px] text-sm font-semibold relative transition-colors -mb-[2px]",
+                activeSecondary === tab.id
+                  ? "text-neutral-900 border-b-2 border-neutral-900"
+                  : "text-neutral-500 hover:text-black"
               )}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
