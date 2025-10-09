@@ -3,7 +3,7 @@ import { PrismaClient } from "@/generated/prisma"
 const prisma = new PrismaClient()
 
 async function main() {
-  // Tạo apps mẫu
+  // Create sample apps
   const instagram = await prisma.app.create({
     data: {
       name: "Instagram",

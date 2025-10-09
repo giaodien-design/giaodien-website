@@ -18,10 +18,10 @@ model App {
   id          String   @id @default(cuid())
   name        String
   description String?
-  icon        String?  // URL icon/logo của app
+  icon        String?  // URL icon/logo of the app
   category    String?  // Social, Finance, Productivity, E-commerce, etc.
   platform    Platform @default(IOS)
-  brandColor  String?  // Màu chủ đạo của app (hex code)
+  brandColor  String?  // Main brand color of the app (hex code)
   websiteUrl  String?
   slug        String   @unique // URL-friendly name: instagram, spotify, etc.
   
@@ -42,7 +42,7 @@ model Screen {
   id          String   @id @default(cuid())
   title       String
   description String?
-  imageUrl    String   // URL ảnh screenshot
+  imageUrl    String   // Screenshot image URL
   
   // Relations
   appId       String

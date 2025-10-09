@@ -21,7 +21,7 @@ export function CategoryNavigation() {
   const [activeSecondary, setActiveSecondary] = useState("di-chuyen")
 
   return (
-    <div className="flex flex-col gap-6 items-start px-20">
+    <div className="flex flex-col gap-4 md:gap-6 items-start px-4 md:px-10 lg:px-20">
       {/* Primary Tabs */}
       <div className="inline-flex bg-neutral-100 rounded-xl p-[3px]">
         {primaryTabs.map((tab) => (
@@ -29,7 +29,7 @@ export function CategoryNavigation() {
             key={tab.id}
             onClick={() => setActivePrimary(tab.id)}
             className={cn(
-              "flex flex-col items-center justify-center px-4 py-3 rounded-lg text-sm font-semibold transition-colors",
+              "flex flex-col items-center justify-center px-3 md:px-4 py-2 md:py-3 rounded-lg text-xs md:text-sm font-semibold transition-colors",
               activePrimary === tab.id
                 ? "bg-white border border-[#ebebeb] text-neutral-900 shadow-sm"
                 : "text-neutral-900 hover:bg-white/60 hover:text-neutral-950"
@@ -41,14 +41,14 @@ export function CategoryNavigation() {
       </div>
       
       {/* Secondary Tabs */}
-      <div className="border-b-2 border-[#ebebeb] w-full">
-        <div className="flex items-center">
+      <div className="border-b-2 border-[#ebebeb] w-full overflow-x-auto overflow-y-hidden scrollbar-hide">
+        <div className="flex items-center min-w-max">
           {secondaryTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveSecondary(tab.id)}
               className={cn(
-                "flex flex-col items-center justify-center px-4 pt-3 pb-[10px] text-sm font-semibold relative transition-colors -mb-[2px]",
+                "flex flex-col items-center justify-center px-3 md:px-4 pt-2 md:pt-3 pb-[8px] md:pb-[10px] text-xs md:text-sm font-semibold relative transition-colors -mb-[2px]",
                 activeSecondary === tab.id
                   ? "text-neutral-900 border-b-2 border-neutral-900"
                   : "text-neutral-500 hover:text-black"

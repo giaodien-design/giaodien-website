@@ -1,13 +1,13 @@
 import { Prisma } from "@/generated/prisma"
 
-// Base types từ Prisma
+// Base types from Prisma
 export type Screen = Prisma.ScreenGetPayload<{
   include: {
     app: true
   }
 }>
 
-// Type cho screen detail (với app info)
+// Type for screen detail (with app info)
 export type ScreenWithApp = Prisma.ScreenGetPayload<{
   include: {
     app: {
@@ -21,6 +21,6 @@ export type ScreenWithApp = Prisma.ScreenGetPayload<{
   }
 }>
 
-// Type cho create/update
+// Type for create/update
 export type ScreenCreateInput = Prisma.ScreenCreateInput
 export type ScreenUpdateInput = Prisma.ScreenUpdateInput

@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma"
 
-// Base types từ Prisma
+// Base types from Prisma
 export type App = Prisma.AppGetPayload<{
   include: {
     screens: true
@@ -12,7 +12,7 @@ export type App = Prisma.AppGetPayload<{
   }
 }>
 
-// Type cho API response với preview screens
+// Type for API response with preview screens
 export type AppWithPreview = Prisma.AppGetPayload<{
   include: {
     screens: {
@@ -26,7 +26,7 @@ export type AppWithPreview = Prisma.AppGetPayload<{
   }
 }>
 
-// Type cho list (không include screens)
+// Type for list (without screens)
 export type AppListItem = Prisma.AppGetPayload<{
   include: {
     _count: {
@@ -37,6 +37,6 @@ export type AppListItem = Prisma.AppGetPayload<{
   }
 }>
 
-// Type cho create/update
+// Type for create/update
 export type AppCreateInput = Prisma.AppCreateInput
 export type AppUpdateInput = Prisma.AppUpdateInput
