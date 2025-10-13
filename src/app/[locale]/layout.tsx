@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { SessionProvider } from "next-auth/react";
 import { Comfortaa } from "next/font/google";
 import "../globals.css";
 
@@ -51,9 +52,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={`${comfortaa.variable} font-sans antialiased`}>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <SessionProvider>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );
