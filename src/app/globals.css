@@ -119,6 +119,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Fix layout shift caused by scrollbar hide/show */
+  html {
+    overflow-y: scroll; /* Always show scrollbar to prevent layout shift */
+  }
 }
 
 @layer utilities {

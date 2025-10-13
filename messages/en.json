@@ -1,0 +1,75 @@
+{
+  "header": {
+    "search": "Search",
+    "login": "Login",
+    "searchPlaceholder": "Search apps...",
+    "recentSearches": "Recent searches",
+    "suggestions": "Suggestions",
+    "noResults": "No results found",
+    "viewAllResults": "View all results"
+  },
+  "hero": {
+    "title": "real interfaces,\nfrom real products",
+    "subtitle": "interfaces collected from over 100 apps in Vietnam"
+  },
+  "categories": {
+    "primaryTabs": {
+      "app": "Applications",
+      "screen": "Screens"
+    },
+    "secondaryTabs": {
+      "all": "All",
+      "transportation": "Transportation",
+      "finance": "Finance",
+      "entertainment": "Entertainment",
+      "lifestyle": "Lifestyle",
+      "productivity": "Productivity"
+    }
+  },
+  "apps": {
+    "noData": "No app data available",
+    "mobileApp": "Mobile application",
+    "screenshot": "screenshot",
+    "searchPlaceholder": "Search by name or description...",
+    "filterByType": "Filter by type",
+    "allTypes": "All",
+    "noResults": "No apps found",
+    "resultsCount": "{{count}} apps",
+    "clearFilters": "Clear filters"
+  },
+  "footer": {
+    "link": "Link",
+    "copyright": "copyright @giaodien.website"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noResults": "No results",
+    "logoAlt": "gdd logo"
+  },
+  "languages": {
+    "vietnamese": "Vietnamese",
+    "english": "English"
+  },
+  "metadata": {
+    "title": "giaodien.website - Real interfaces from real products",
+    "description": "Collection of interfaces from over 100 apps in Vietnam"
+  },
+  "test": {
+    "pageTitle": "Test Page",
+    "headerSearch": "Header Search:",
+    "headerLogin": "Header Login:",
+    "heroTitle": "Hero Title:",
+    "heroSubtitle": "Hero Subtitle:"
+  },
+  "search": {
+    "pageTitle": "Search Results",
+    "searchFor": "Results for",
+    "foundResults": "Found {{count}} apps",
+    "noResults": "No results found",
+    "tryDifferent": "Try different keywords",
+    "allApps": "All apps",
+    "filterResults": "Filter results"
+  }
+}
+

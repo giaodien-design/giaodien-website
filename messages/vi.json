@@ -1,0 +1,75 @@
+{
+  "header": {
+    "search": "Tìm kiếm",
+    "login": "Đăng nhập",
+    "searchPlaceholder": "Tìm kiếm ứng dụng...",
+    "recentSearches": "Tìm kiếm gần đây",
+    "suggestions": "Gợi ý",
+    "noResults": "Không tìm thấy kết quả",
+    "viewAllResults": "Xem tất cả kết quả"
+  },
+  "hero": {
+    "title": "giao diện thật,\ntừ sản phẩm thật",
+    "subtitle": "giao diện được thu thập từ hơn 100 ứng dụng tại Việt Nam"
+  },
+  "categories": {
+    "primaryTabs": {
+      "app": "Ứng dụng",
+      "screen": "Màn hình"
+    },
+    "secondaryTabs": {
+      "all": "Tất cả",
+      "transportation": "Di chuyển",
+      "finance": "Tài chính",
+      "entertainment": "Giải trí",
+      "lifestyle": "Đời sống",
+      "productivity": "Hiệu suất"
+    }
+  },
+  "apps": {
+    "noData": "Không có dữ liệu ứng dụng",
+    "mobileApp": "Ứng dụng di động",
+    "screenshot": "ảnh chụp màn hình",
+    "searchPlaceholder": "Tìm kiếm theo tên hoặc mô tả...",
+    "filterByType": "Lọc theo loại",
+    "allTypes": "Tất cả",
+    "noResults": "Không tìm thấy ứng dụng nào",
+    "resultsCount": "{count} ứng dụng",
+    "clearFilters": "Xóa bộ lọc"
+  },
+  "footer": {
+    "link": "Link",
+    "copyright": "copyright @giaodien.website"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "noResults": "Không có kết quả",
+    "logoAlt": "logo gdd"
+  },
+  "languages": {
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "metadata": {
+    "title": "giaodien.website - Giao diện thật từ sản phẩm thật",
+    "description": "Bộ sưu tập giao diện được thu thập từ hơn 100 ứng dụng tại Việt Nam"
+  },
+  "test": {
+    "pageTitle": "Trang Kiểm Tra",
+    "headerSearch": "Tìm kiếm Header:",
+    "headerLogin": "Đăng nhập Header:",
+    "heroTitle": "Tiêu đề Hero:",
+    "heroSubtitle": "Phụ đề Hero:"
+  },
+  "search": {
+    "pageTitle": "Kết quả tìm kiếm",
+    "searchFor": "Kết quả cho",
+    "foundResults": "Tìm thấy {{count}} ứng dụng",
+    "noResults": "Không tìm thấy kết quả",
+    "tryDifferent": "Hãy thử từ khóa khác",
+    "allApps": "Tất cả ứng dụng",
+    "filterResults": "Lọc kết quả"
+  }
+}
+
