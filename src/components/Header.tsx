@@ -6,6 +6,18 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
+import { getApps } from '@/lib/actions';
+import { AppItem } from './AppItem';
+
+type AppWithScreens = {
+  id: string;
+  name: string;
+  description: string | null;
+  screens?: Array<{
+    id: string;
+    imageUrl: string;
+  }>;
+};
 
 export function Header() {
   const { data: session } = useSession();
@@ -20,6 +32,9 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [topBarClosed, setTopBarClosed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<AppWithScreens[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Check if top bar is closed and screen size
@@ -45,6 +60,27 @@ export function Header() {
       searchInputRef.current.focus();
     }
   }, [isSearchOpen]);
+
+  // Search functionality
+  useEffect(() => {
+    const searchApps = async () => {
+      if (searchQuery.trim().length < 2) {
+        setSearchResults([]);
+        return;
+      }
+
+      setIsSearching(true);
+      const result = await getApps({ search: searchQuery });
+      setIsSearching(false);
+
+      if (result.success && result.data) {
+        setSearchResults(result.data as AppWithScreens[]);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchApps, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
 
   // Prevent body scroll when menu or search is open
   useEffect(() => {
@@ -254,33 +290,95 @@ export function Header() {
       {/* Search Drawer (Both Desktop and Mobile) */}
       <div 
         className={`
-          fixed left-0 right-0 bg-gd-dark z-50
-          transition-all duration-300 ease-in-out overflow-hidden
-          border-b border-gd-cream/[0.12]
-          ${isSearchOpen ? 'max-h-[100svh] opacity-100' : 'max-h-0 opacity-0'}
+          fixed left-0 right-0 bottom-0 bg-gd-dark z-50
+          transition-all duration-300 ease-in-out overflow-y-auto scrollbar-hide
+          border-t border-gd-cream/[0.12]
+          ${isSearchOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
         `}
         style={{ 
           top: topBarClosed 
             ? (isMobile ? '80px' : '160px')
-            : (isMobile ? '129px' : '209px')
-        }} // Adjust based on screen size and top bar visibility
+            : (isMobile ? '129px' : '209px'),
+          height: topBarClosed
+            ? (isMobile ? 'calc(100svh - 80px)' : 'calc(100svh - 160px)')
+            : (isMobile ? 'calc(100svh - 129px)' : 'calc(100svh - 209px)')
+        }}
       >
-        <div className="flex flex-col p-10 gap-6">
-          <div className="flex items-center gap-4">
+        {/* Search Field */}
+        <div className="border-b border-gd-cream/[0.12] flex w-full">
+          {/* Input Section */}
+          <div className="flex-1 md:flex-[1486] flex items-center h-20 md:h-40 px-5 md:px-20 border-r border-gd-cream/[0.12]">
             <input
               ref={searchInputRef}
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
-              className="flex-1 bg-transparent border-b border-gd-cream/[0.12] pb-2 text-gd-cream text-base outline-none focus:border-gd-cream transition-colors"
+              className="w-full bg-transparent text-gd-cream/40 text-sm font-normal leading-normal outline-none focus:text-gd-cream hover:text-gd-cream transition-colors placeholder:text-gd-cream/40"
             />
-            <button
-              onClick={() => setIsSearchOpen(false)}
-              className="text-gd-cream hover:text-gd-cream/60 transition-colors"
-            >
-              <p className="text-sm font-normal">Close</p>
-            </button>
           </div>
-          {/* Search results would go here */}
+          
+          {/* Close Button */}
+          <button
+            onClick={() => {
+              setIsSearchOpen(false);
+              setSearchQuery('');
+              setSearchResults([]);
+            }}
+            className="w-[74px] md:w-[194px] h-20 md:h-40 flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
+          >
+            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal">
+              {t('close')}
+            </p>
+          </button>
+        </div>
+
+        {/* Search Results */}
+        <div className="flex flex-col w-full">
+          {isSearching && (
+            <div className="w-full text-center py-20">
+              <p className="text-gd-cream/60">{tCommon('loading')}</p>
+            </div>
+          )}
+
+          {!isSearching && searchQuery.length >= 2 && searchResults.length === 0 && (
+            <div className="w-full text-center py-20">
+              <p className="text-gd-cream/60 text-lg">{t('noResults')}</p>
+            </div>
+          )}
+
+          {!isSearching && searchResults.length > 0 && (
+            <div className="flex flex-wrap w-full border-b border-gd-cream/[0.12]">
+              {searchResults.map((app, index) => {
+                const isLastRowDesktop = index >= searchResults.length - (searchResults.length % 4 || 4);
+                const isLastRowMobile = index >= searchResults.length - (searchResults.length % 2 || 2);
+
+                return (
+                  <div
+                    key={app.id}
+                    className={`
+                      w-1/2 md:w-1/4
+                      flex
+                      border-r border-gd-cream/[0.12]
+                      border-b border-gd-cream/[0.12]
+                      md:[&:nth-child(4n)]:border-r-0
+                      [&:nth-child(2n)]:border-r-0
+                      md:[&:nth-child(2n)]:border-r
+                      ${isLastRowMobile ? 'max-md:border-b-0' : ''}
+                      ${isLastRowDesktop ? 'md:border-b-0' : ''}
+                    `}
+                  >
+                    <AppItem
+                      id={app.id}
+                      name={app.name}
+                      description={app.description || ''}
+                      thumbnailUrl={app.screens?.[0]?.imageUrl}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
