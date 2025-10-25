@@ -62,7 +62,7 @@ export function AppGrid({ apps, isLoading = false }: AppGridProps) {
           <div className="flex gap-3 items-start w-full">
             <div className="border border-neutral-100 rounded-xl w-10 h-10 shrink-0 relative overflow-hidden">
               <Image
-                src="/images/gdd-logo.svg"
+                src="/images/sample-logo.png"
                 alt={app.name}
                 fill
                 className="object-cover"

@@ -107,6 +107,45 @@ export async function getApps(params?: {
   }
 }
 
+// Get single app by ID
+export async function getAppById(appId: string) {
+  try {
+    // Validate ID format
+    const idSchema = z.string().cuid("Invalid app ID format");
+    const validatedId = idSchema.parse(appId);
+
+    const app = await prisma.app.findUnique({
+      where: { 
+        id: validatedId,
+        isPublished: true,
+      },
+      include: {
+        screens: {
+          orderBy: { createdAt: "asc" },
+        },
+        appTypes: {
+          include: {
+            type: true,
+          },
+        },
+      },
+    });
+
+    if (!app) {
+      return { success: false, error: "App not found" };
+    }
+
+    return { success: true, data: app };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Invalid ID:", error.issues);
+      return { success: false, error: "Invalid app ID" };
+    }
+    console.error("Failed to fetch app:", error);
+    return { success: false, error: "Failed to fetch app" };
+  }
+}
+
 // Get all types
 export async function getTypes() {
   try {

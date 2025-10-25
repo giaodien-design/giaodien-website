@@ -4,11 +4,11 @@ import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { SessionProvider } from "next-auth/react";
-import { Comfortaa } from "next/font/google";
+import { Spline_Sans } from "next/font/google";
 import "../globals.css";
 
-const comfortaa = Comfortaa({
-  variable: "--font-comfortaa",
+const splineSans = Spline_Sans({
+  variable: "--font-spline-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
@@ -51,7 +51,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${comfortaa.variable} font-sans antialiased`}>
+      <body className={`${splineSans.variable} font-sans antialiased`}>
         <SessionProvider>
           <NextIntlClientProvider messages={messages}>
             {children}

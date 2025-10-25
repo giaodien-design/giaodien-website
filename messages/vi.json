@@ -1,12 +1,37 @@
 {
+  "topBar": {
+    "message": "Giao diện thật, từ sản phẩm thật",
+    "close": "Đóng"
+  },
   "header": {
     "search": "Tìm kiếm",
     "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "switchToEnglish": "Chuyển sang tiếng Anh",
     "searchPlaceholder": "Tìm kiếm ứng dụng...",
     "recentSearches": "Tìm kiếm gần đây",
     "suggestions": "Gợi ý",
     "noResults": "Không tìm thấy kết quả",
     "viewAllResults": "Xem tất cả kết quả"
+  },
+  "auth": {
+    "emailPlaceholder": "Nhập email của bạn",
+    "login": "Đăng nhập",
+    "signup": "Tạo tài khoản",
+    "continueWithGoogle": "Tiếp tục với Google",
+    "terms": "Khi tiếp tục, bạn đồng ý với",
+    "termsOfService": "Điều khoản dịch vụ",
+    "and": "và",
+    "privacyPolicy": "Chính sách bảo mật",
+    "ofUs": "của chúng tôi.",
+    "alreadyHaveAccount": "Đăng nhập",
+    "dontHaveAccount": "Đăng ký tài khoản",
+    "checkEmail": "Kiểm tra email của bạn để nhận link đăng nhập!",
+    "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "pleaseEnterEmail": "Vui lòng nhập email",
+    "sending": "Đang gửi...",
+    "loggingIn": "Đang đăng nhập...",
+    "signingUp": "Đang đăng ký..."
   },
   "hero": {
     "title": "giao diện thật,\ntừ sản phẩm thật",
@@ -37,14 +62,23 @@
     "resultsCount": "{count} ứng dụng",
     "clearFilters": "Xóa bộ lọc"
   },
+  "appDetail": {
+    "copy": "Copy",
+    "download": "Download",
+    "noScreenYet": "Chưa có màn hình nào",
+    "copySuccess": "Đã sao chép ảnh vào clipboard!",
+    "copyError": "Không thể sao chép ảnh",
+    "downloadError": "Không thể tải xuống ảnh"
+  },
   "footer": {
     "link": "Link",
-    "copyright": "copyright @giaodien.website"
+    "copyright": "© 2025 giao diện™️ . Bảo lưu mọi quyền."
   },
   "common": {
     "loading": "Đang tải...",
     "error": "Đã xảy ra lỗi",
     "noResults": "Không có kết quả",
+    "noData": "Không có dữ liệu",
     "logoAlt": "logo gdd"
   },
   "languages": {

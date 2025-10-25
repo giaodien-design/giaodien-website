@@ -1,12 +1,36 @@
 {
+  "topBar": {
+    "message": "real interfaces, from real products",
+    "close": "Close"
+  },
   "header": {
     "search": "Search",
     "login": "Login",
+    "logout": "Logout",
+    "switchToVietnamese": "Switch to Vietnamese",
     "searchPlaceholder": "Search apps...",
     "recentSearches": "Recent searches",
     "suggestions": "Suggestions",
     "noResults": "No results found",
     "viewAllResults": "View all results"
+  },
+  "auth": {
+    "emailPlaceholder": "Enter your email",
+    "login": "Login",
+    "signup": "Create account",
+    "continueWithGoogle": "Continue with Google",
+    "terms": "By continuing, you agree to our",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "alreadyHaveAccount": "Login",
+    "dontHaveAccount": "Create an account",
+    "checkEmail": "Check your email for the login link!",
+    "error": "An error occurred. Please try again.",
+    "pleaseEnterEmail": "Please enter email",
+    "sending": "Sending...",
+    "loggingIn": "Logging in...",
+    "signingUp": "Signing up..."
   },
   "hero": {
     "title": "real interfaces,\nfrom real products",
@@ -37,14 +61,23 @@
     "resultsCount": "{{count}} apps",
     "clearFilters": "Clear filters"
   },
+  "appDetail": {
+    "copy": "Copy",
+    "download": "Download",
+    "noScreenYet": "No screen yet",
+    "copySuccess": "Image copied to clipboard!",
+    "copyError": "Failed to copy image",
+    "downloadError": "Failed to download image"
+  },
   "footer": {
     "link": "Link",
-    "copyright": "copyright @giaodien.website"
+    "copyright": "© 2025 giao diện™️ . Bảo lưu mọi quyền."
   },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
     "noResults": "No results",
+    "noData": "No data",
     "logoAlt": "gdd logo"
   },
   "languages": {

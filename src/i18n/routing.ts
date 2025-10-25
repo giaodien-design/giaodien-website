@@ -10,6 +10,9 @@ export const routing = defineRouting({
   
   // Automatically detect the user's locale based on their browser settings
   localeDetection: true,
+  
+  // Always show locale prefix in URL
+  localePrefix: 'always'
 });
 
 // Lightweight wrappers around Next.js' navigation APIs

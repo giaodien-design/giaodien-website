@@ -5,9 +5,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-comfortaa)", "sans-serif"],
-        mono: ["var(--font-comfortaa)", "monospace"],
-        comfortaa: ["var(--font-comfortaa)", "sans-serif"],
+        sans: ["var(--font-spline-sans)", "sans-serif"],
+        mono: ["var(--font-spline-sans)", "monospace"],
+      },
+      colors: {
+        'gd-dark': '#0d0d0d',
+        'gd-cream': '#feffe1',
       },
     },
   },

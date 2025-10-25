@@ -1,14 +1,14 @@
+import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
-import { HeroSection } from "@/components/HeroSection";
-import { MobileAppGrid } from "@/components/MobileAppGrid";
+import { AppGridContainer } from "@/components/AppGridContainer";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gd-dark flex flex-col">
+      <TopBar />
       <Header />
-      <HeroSection />
-      <MobileAppGrid />
+      <AppGridContainer />
       <Footer />
     </div>
   );
