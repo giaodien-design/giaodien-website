@@ -1,0 +1,110 @@
+{
+  "topBar": {
+    "message": "real interfaces, from real products",
+    "close": "Close"
+  },
+  "header": {
+    "search": "Search",
+    "login": "Login",
+    "logout": "Logout",
+    "switchToVietnamese": "Switch to Vietnamese",
+    "switchToEnglish": "Switch to English",
+    "searchPlaceholder": "Search...",
+    "close": "Close",
+    "recentSearches": "Recent searches",
+    "suggestions": "Suggestions",
+    "noResults": "No results found",
+    "viewAllResults": "View all results"
+  },
+  "auth": {
+    "emailPlaceholder": "Enter your email",
+    "login": "Login",
+    "signup": "Create account",
+    "continueWithGoogle": "Continue with Google",
+    "terms": "By continuing, you agree to our",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "alreadyHaveAccount": "Login",
+    "dontHaveAccount": "Create an account",
+    "checkEmail": "Check your email for the login link!",
+    "error": "An error occurred. Please try again.",
+    "pleaseEnterEmail": "Please enter email",
+    "sending": "Sending...",
+    "loggingIn": "Logging in...",
+    "signingUp": "Signing up..."
+  },
+  "hero": {
+    "title": "real interfaces,\nfrom real products",
+    "subtitle": "interfaces collected from over 100 apps in Vietnam"
+  },
+  "categories": {
+    "primaryTabs": {
+      "app": "Applications",
+      "screen": "Screens"
+    },
+    "secondaryTabs": {
+      "all": "All",
+      "transportation": "Transportation",
+      "finance": "Finance",
+      "entertainment": "Entertainment",
+      "lifestyle": "Lifestyle",
+      "productivity": "Productivity"
+    }
+  },
+  "apps": {
+    "noData": "No app data available",
+    "mobileApp": "Mobile application",
+    "screenshot": "screenshot",
+    "searchPlaceholder": "Search by name or description...",
+    "filterByType": "Filter by type",
+    "allTypes": "All",
+    "noResults": "No apps found",
+    "resultsCount": "{{count}} apps",
+    "clearFilters": "Clear filters"
+  },
+  "appDetail": {
+    "copy": "Copy",
+    "download": "Download",
+    "noScreenYet": "No screen yet",
+    "copySuccess": "Image copied to clipboard!",
+    "copyError": "Failed to copy image",
+    "downloadError": "Failed to download image"
+  },
+  "footer": {
+    "link": "Link",
+    "copyright": "© 2025 giao diện™️ . Bảo lưu mọi quyền."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noResults": "No results",
+    "noData": "No data",
+    "logoAlt": "gdd logo"
+  },
+  "languages": {
+    "vietnamese": "Vietnamese",
+    "english": "English"
+  },
+  "metadata": {
+    "title": "giaodien.website - Real interfaces from real products",
+    "description": "Collection of interfaces from over 100 apps in Vietnam"
+  },
+  "test": {
+    "pageTitle": "Test Page",
+    "headerSearch": "Header Search:",
+    "headerLogin": "Header Login:",
+    "heroTitle": "Hero Title:",
+    "heroSubtitle": "Hero Subtitle:"
+  },
+  "search": {
+    "pageTitle": "Search Results",
+    "searchFor": "Results for",
+    "foundResults": "Found {{count}} apps",
+    "noResults": "No results found",
+    "tryDifferent": "Try different keywords",
+    "allApps": "All apps",
+    "filterResults": "Filter results"
+  }
+}
+

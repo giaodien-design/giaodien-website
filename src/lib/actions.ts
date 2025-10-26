@@ -60,18 +60,135 @@ const createAppSchema = z.object({
     .nullable(),
 });
 
-// Example: Get all apps
-export async function getApps() {
+// Get all apps with optional filtering and search
+export async function getApps(params?: {
+  search?: string;
+  typeId?: string;
+}) {
   try {
+    const { search, typeId } = params || {};
+
+    const where: any = { isPublished: true };
+
+    // Search by name or description
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    // Filter by type
+    if (typeId) {
+      where.appTypes = {
+        some: {
+          typeId: typeId,
+        },
+      };
+    }
+
     const apps = await prisma.app.findMany({
-      where: { isPublished: true },
-      include: { screens: true },
+      where,
+      include: {
+        screens: true,
+        appTypes: {
+          include: {
+            type: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
+
     return { success: true, data: apps };
   } catch (error) {
     console.error("Failed to fetch apps:", error);
     return { success: false, error: "Failed to fetch apps" };
+  }
+}
+
+// Get single app by ID
+export async function getAppById(appId: string) {
+  try {
+    // Validate ID format
+    const idSchema = z.string().cuid("Invalid app ID format");
+    const validatedId = idSchema.parse(appId);
+
+    const app = await prisma.app.findUnique({
+      where: { 
+        id: validatedId,
+        isPublished: true,
+      },
+      include: {
+        screens: {
+          orderBy: { createdAt: "asc" },
+        },
+        appTypes: {
+          include: {
+            type: true,
+          },
+        },
+      },
+    });
+
+    if (!app) {
+      return { success: false, error: "App not found" };
+    }
+
+    return { success: true, data: app };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Invalid ID:", error.issues);
+      return { success: false, error: "Invalid app ID" };
+    }
+    console.error("Failed to fetch app:", error);
+    return { success: false, error: "Failed to fetch app" };
+  }
+}
+
+// Get all types
+export async function getTypes() {
+  try {
+    const types = await prisma.type.findMany({
+      orderBy: { name: "asc" },
+    });
+    return { success: true, data: types };
+  } catch (error) {
+    console.error("Failed to fetch types:", error);
+    return { success: false, error: "Failed to fetch types" };
+  }
+}
+
+// Get search suggestions
+export async function getSearchSuggestions(query: string) {
+  try {
+    if (!query || query.length < 2) {
+      return { success: true, data: [] };
+    }
+
+    const apps = await prisma.app.findMany({
+      where: {
+        isPublished: true,
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { description: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        slug: true,
+        icon: true,
+      },
+      take: 5,
+      orderBy: { name: "asc" },
+    });
+
+    return { success: true, data: apps };
+  } catch (error) {
+    console.error("Failed to fetch suggestions:", error);
+    return { success: false, error: "Failed to fetch suggestions" };
   }
 }
 
