@@ -106,6 +106,27 @@
     "tryDifferent": "Hãy thử từ khóa khác",
     "allApps": "Tất cả ứng dụng",
     "filterResults": "Lọc kết quả"
+  },
+  "checkout": {
+    "pageTitle": "Thanh toán",
+    "orderSuccess": "Đặt hàng thành công",
+    "orderId": "Mã đơn hàng",
+    "paymentSuccess": "Thanh toán thành công",
+    "paymentSuccessMessage": "Chúng tôi đã nhận được thanh toán, đơn hàng sẽ được xử lý ngay!",
+    "paymentInstructions": "Hướng dẫn thanh toán qua chuyển khoản ngân hàng",
+    "method1": "Cách 1: Quét mã QR bằng app ngân hàng",
+    "method2": "Cách 2: Chuyển khoản thủ công",
+    "waitingPayment": "Trạng thái: Chờ thanh toán...",
+    "autoChecking": "Hệ thống đang tự động kiểm tra thanh toán...",
+    "accountHolder": "Chủ tài khoản",
+    "accountNumber": "Số tài khoản",
+    "amount": "Số tiền",
+    "transferContent": "Nội dung CK",
+    "importantNote": "Lưu ý quan trọng",
+    "keepContentNote": "Vui lòng giữ nguyên nội dung chuyển khoản {content} để hệ thống tự động xác nhận thanh toán",
+    "orderInfo": "Thông tin đơn hàng",
+    "product": "Sản phẩm",
+    "total": "Tổng tiền",
+    "orderNotFound": "Không tìm thấy đơn hàng"
   }
 }
-

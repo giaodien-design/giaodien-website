@@ -105,6 +105,27 @@
     "tryDifferent": "Try different keywords",
     "allApps": "All apps",
     "filterResults": "Filter results"
+  },
+  "checkout": {
+    "pageTitle": "Checkout",
+    "orderSuccess": "Order Successful",
+    "orderId": "Order ID",
+    "paymentSuccess": "Payment Successful",
+    "paymentSuccessMessage": "We have received your payment, your order will be processed immediately!",
+    "paymentInstructions": "Payment Instructions via Bank Transfer",
+    "method1": "Method 1: Scan QR code with banking app",
+    "method2": "Method 2: Manual bank transfer",
+    "waitingPayment": "Status: Waiting for payment...",
+    "autoChecking": "System is automatically checking payment...",
+    "accountHolder": "Account Holder",
+    "accountNumber": "Account Number",
+    "amount": "Amount",
+    "transferContent": "Transfer Content",
+    "importantNote": "Important Note",
+    "keepContentNote": "Please keep the transfer content {content} unchanged for automatic payment confirmation",
+    "orderInfo": "Order Information",
+    "product": "Product",
+    "total": "Total",
+    "orderNotFound": "Order not found"
   }
 }
-
