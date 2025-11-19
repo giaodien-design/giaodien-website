@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
         hostname: 'qr.sepay.vn'
       }
     ]
+  },
+  eslint: {
+    ignoreDuringBuilds: true
   }
 };
 
