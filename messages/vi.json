@@ -41,8 +41,8 @@
   },
   "categories": {
     "primaryTabs": {
-      "app": "Ứng dụng",
-      "screen": "Màn hình"
+      "app": "Apps",
+      "flow": "Flows"
     },
     "secondaryTabs": {
       "all": "Tất cả",

@@ -31,15 +31,16 @@ type AppWithTypes = {
 interface TabsAndAppListProps {
   initialApps: AppWithTypes[];
   types: Type[];
+  activeTab: 'app' | 'flow';
+  onTabChange: (tab: 'app' | 'flow') => void;
 }
 
 export function TabsAndAppList({ initialApps, types }: TabsAndAppListProps) {
   const t = useTranslations('categories');
   const tCommon = useTranslations('common');
   const [apps, setApps] = useState<AppWithTypes[]>(initialApps);
-  const [activeTab, setActiveTab] = useState<'app' | 'screen'>('app');
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [showLoading, setShowLoading] = useState(false);
 
   const fetchApps = useCallback(async (typeId: string | null) => {
@@ -80,86 +81,43 @@ export function TabsAndAppList({ initialApps, types }: TabsAndAppListProps) {
 
   return (
     <>
-      {/* Primary Tabs */}
-      <div className="border-b border-gd-cream/[0.12] flex items-center w-full">
-        <button
-          onClick={() => setActiveTab('app')}
-          className={`
-            flex-1 h-20 md:h-40 flex items-center justify-center
-            border-r border-gd-cream/[0.12]
-            transition-colors
-            ${activeTab === 'app' 
-              ? 'bg-gd-cream text-gd-dark' 
-              : 'text-gd-cream/40 hover:text-gd-cream/60 cursor-pointer'
-            }
-          `}
-        >
-          <p className="text-sm font-normal leading-normal whitespace-pre">
-            {t('primaryTabs.app')}
-          </p>
-        </button>
-        <button
-          onClick={() => setActiveTab('screen')}
-          className={`
-            flex-1 h-20 md:h-40 flex items-center justify-center
-            transition-colors
-            ${activeTab === 'screen' 
-              ? 'bg-gd-cream text-gd-dark' 
-              : 'text-gd-cream/40 hover:text-gd-cream/60 cursor-pointer'
-            }
-          `}
-        >
-          <p className="text-sm font-normal leading-normal whitespace-pre">
-            {t('primaryTabs.screen')}
-          </p>
-        </button>
-      </div>
-
       {/* Secondary Tabs */}
-      <div className="border-b border-gd-cream/[0.12] w-full">
-        <div className="flex items-center overflow-x-auto scrollbar-hide md:overflow-visible">
+      <div className="bg-background border-b border-border px-5 md:px-6 py-4 md:py-5">
+        <div className="flex gap-4 items-start overflow-x-auto scrollbar-hide">
           {/* All */}
           <button
             onClick={() => handleTypeChange(null)}
             className={`
-              h-20 md:h-40 flex items-center justify-center
-              border-r border-gd-cream/[0.12]
-              px-5
-              md:flex-1 md:px-0
-              transition-colors
+              flex items-center justify-center px-2 py-1 rounded-full transition-all shrink-0
               ${selectedTypeId === null 
-                ? 'text-gd-cream border-b-2 border-b-gd-cream' 
-                : 'text-gd-cream/60 hover:text-gd-cream/80 cursor-pointer'
+                ? 'bg-secondary text-foreground' 
+                : 'text-inactive-text hover:text-foreground'
               }
             `}
           >
-            <p className="text-sm font-normal leading-normal whitespace-nowrap">
+            <span className="leading-[1.5] text-[14px] tracking-[0.07px] whitespace-nowrap">
               {t('secondaryTabs.all')}
-            </p>
+            </span>
           </button>
           
           {/* Type Tabs */}
-          {types.slice(0, 4).map((type, index) => {
+          {types.slice(0, 4).map((type) => {
             const translationKey = typeTranslationMap[type.slug] || type.slug;
             return (
               <button
                 key={type.id}
                 onClick={() => handleTypeChange(type.id)}
                 className={`
-                  h-20 md:h-40 flex items-center justify-center
-                  ${index < 3 ? 'border-r border-gd-cream/[0.12]' : ''}
-                  px-5
-                  md:flex-1 md:px-0
-                  transition-colors
+                  flex items-center justify-center px-2 py-1 rounded-full transition-all shrink-0
                   ${selectedTypeId === type.id 
-                    ? 'text-gd-cream border-b-2 border-b-gd-cream' 
-                    : 'text-gd-cream/60 hover:text-gd-cream/80 cursor-pointer'
+                    ? 'bg-secondary text-foreground' 
+                    : 'text-inactive-text hover:text-foreground'
                   }
                 `}
               >
-                <p className="text-sm font-normal leading-normal whitespace-nowrap">
-                  {t(`secondaryTabs.${translationKey}` as any)}
-                </p>
+                <span className="leading-[1.5] text-[14px] tracking-[0.07px] whitespace-nowrap">
+                  {t(`secondaryTabs.${translationKey}` as 'secondaryTabs.all')}
+                </span>
               </button>
             );
           })}
@@ -167,53 +125,34 @@ export function TabsAndAppList({ initialApps, types }: TabsAndAppListProps) {
       </div>
 
       {/* App List */}
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full bg-background">
         {/* Loading State - only shown if request takes longer than 300ms */}
         {showLoading && (
           <div className="w-full text-center py-20">
-            <p className="text-gd-cream/60">{tCommon('loading')}</p>
+            <p className="text-muted-foreground">{tCommon('loading')}</p>
           </div>
         )}
 
         {/* Empty State */}
         {!showLoading && apps.length === 0 && (
           <div className="w-full text-center py-20">
-            <p className="text-gd-cream/60 text-lg">{tCommon('noResults')}</p>
+            <p className="text-muted-foreground text-lg">{tCommon('noResults')}</p>
           </div>
         )}
 
         {/* App Grid */}
         {!showLoading && apps.length > 0 && (
-          <div className="flex flex-wrap w-full">
-            {apps.map((app, index) => {
-              // Add border-b to all items except those in the last row
-              const isLastRowDesktop = index >= apps.length - (apps.length % 4 || 4);
-              const isLastRowMobile = index >= apps.length - (apps.length % 2 || 2);
-              
-              return (
-                <div
-                  key={app.id}
-                  className={`
-                    w-1/2 md:w-1/4
-                    flex
-                    border-r border-gd-cream/[0.12]
-                    border-b border-gd-cream/[0.12]
-                    md:[&:nth-child(4n)]:border-r-0
-                    [&:nth-child(2n)]:border-r-0
-                    md:[&:nth-child(2n)]:border-r
-                    ${isLastRowMobile ? 'max-md:border-b-0' : ''}
-                    ${isLastRowDesktop ? 'md:border-b-0' : ''}
-                  `}
-                >
-                  <AppItem
-                    id={app.id}
-                    name={app.name}
-                    description={app.description || ''}
-                    thumbnailUrl={app.screens?.[0]?.imageUrl}
-                  />
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full items-stretch">
+            {apps.map((app) => (
+              <AppItem
+                key={app.id}
+                id={app.id}
+                name={app.name}
+                description={app.description || ''}
+                thumbnailUrl={app.screens?.[0]?.imageUrl}
+                logoUrl={app.icon}
+              />
+            ))}
           </div>
         )}
       </div>

@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import { getAppById } from '@/lib/actions';
 import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import { Header } from '@/components/Header';
@@ -12,20 +11,25 @@ interface PageProps {
   };
 }
 
-export default async function AppDetailPage({ params }: PageProps) {
+// Dummy flow data for now
+const dummyFlows: Record<string, { id: string; name: string; description?: string }> = {
+  '1': { id: '1', name: 'Onboarding', description: 'User onboarding flow' },
+  '2': { id: '2', name: 'Login & Signup', description: 'Authentication flow' },
+  '3': { id: '3', name: 'Booking', description: 'Booking and reservation flow' },
+  '4': { id: '4', name: 'Filtering', description: 'Search and filter flow' },
+};
+
+export default async function FlowDetailPage({ params }: PageProps) {
   const { id } = params;
   const t = await getTranslations('appDetail');
   const tCommon = await getTranslations('common');
 
-  // Fetch app data
-  const result = await getAppById(id);
+  // Get flow data
+  const flow = dummyFlows[id];
 
-  if (!result.success || !result.data) {
+  if (!flow) {
     notFound();
   }
-
-  const app = result.data;
-  const screens = app.screens || [];
 
   // Use demo images for now (10 screens)
   const demoScreens = Array.from({ length: 10 }, (_, i) => ({
@@ -39,24 +43,11 @@ export default async function AppDetailPage({ params }: PageProps) {
       <div className="hidden sm:flex w-full">
         <Header hideTabs={true} />
         <div className="flex-1 overflow-y-auto min-w-0 w-full">
-          {/* App Header Section */}
-          <div className="flex gap-6 items-center px-6 py-5 border-b border-border">
-            <div className="relative w-20 h-20 rounded-[4px] shrink-0 overflow-hidden">
-              <Image
-                src="/images/sample-app-thumbnail.png"
-                alt={app.name}
-                fill
-                className="object-cover rounded-[4px]"
-              />
-            </div>
-            <div className="flex flex-col gap-1 flex-1 min-w-0">
-              <h1 className="text-foreground text-base font-normal leading-[1.5] w-full">
-                {app.name}
-              </h1>
-              <p className="text-muted-foreground text-sm font-normal leading-[1.5] tracking-[0.07px] w-full">
-                {app.description || ''}
-              </p>
-            </div>
+          {/* Flow Header Section */}
+          <div className="flex items-center px-6 py-5 border-b border-border">
+            <h1 className="text-foreground text-base font-normal leading-[1.5] w-full">
+              {flow.name}
+            </h1>
           </div>
 
           {/* Screen Grid - 4 items per row on desktop */}
@@ -79,7 +70,7 @@ export default async function AppDetailPage({ params }: PageProps) {
                       <div className="aspect-[249/540] w-full relative rounded-[10px] overflow-hidden">
                         <Image
                           src={screen.imageUrl}
-                          alt={`${app.name} - Screen ${rowIndex * 4 + colIndex + 1}`}
+                          alt={`${flow.name} - Screen ${rowIndex * 4 + colIndex + 1}`}
                           fill
                           className="object-cover object-center rounded-[10px]"
                           sizes="(max-width: 768px) 50vw, 25vw"
@@ -100,24 +91,11 @@ export default async function AppDetailPage({ params }: PageProps) {
       <div className="flex sm:hidden flex-col w-full">
         <Header hideTabs={true} />
         <div className="flex-1 overflow-y-auto">
-          {/* App Header Section */}
-          <div className="flex gap-6 items-center p-5 border-b border-border">
-            <div className="relative w-20 h-20 rounded-[4px] shrink-0 overflow-hidden">
-              <Image
-                src="/images/sample-app-thumbnail.png"
-                alt={app.name}
-                fill
-                className="object-cover rounded-[4px]"
-              />
-            </div>
-            <div className="flex flex-col gap-1 flex-1 min-w-0">
-              <h1 className="text-foreground text-base font-normal leading-[1.5] w-full">
-                {app.name}
-              </h1>
-              <p className="text-muted-foreground text-sm font-normal leading-[1.5] tracking-[0.07px] w-full">
-                {app.description || ''}
-              </p>
-            </div>
+          {/* Flow Header Section */}
+          <div className="flex items-center p-5 border-b border-border">
+            <h1 className="text-foreground text-base font-normal leading-[1.5] w-full">
+              {flow.name}
+            </h1>
           </div>
 
           {/* Screen Grid - 2 items per row on mobile */}
@@ -140,7 +118,7 @@ export default async function AppDetailPage({ params }: PageProps) {
                       <div className="aspect-[249/540] w-full relative rounded-[10px] overflow-hidden">
                         <Image
                           src={screen.imageUrl}
-                          alt={`${app.name} - Screen ${rowIndex * 2 + colIndex + 1}`}
+                          alt={`${flow.name} - Screen ${rowIndex * 2 + colIndex + 1}`}
                           fill
                           className="object-cover object-center rounded-[10px]"
                           sizes="50vw"
@@ -159,3 +137,4 @@ export default async function AppDetailPage({ params }: PageProps) {
     </div>
   );
 }
+

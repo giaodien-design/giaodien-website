@@ -40,8 +40,8 @@
   },
   "categories": {
     "primaryTabs": {
-      "app": "Applications",
-      "screen": "Screens"
+      "app": "Apps",
+      "flow": "Flows"
     },
     "secondaryTabs": {
       "all": "All",

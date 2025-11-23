@@ -24,22 +24,17 @@ export function TopBar() {
 
   return (
     <div 
-      className={`
-        border-b border-gd-cream/[0.12] 
-        flex gap-4 items-center justify-center 
-        px-5 md:px-20 py-4 
-        relative w-full
-      `}
+      className="bg-secondary border-b border-border flex gap-4 items-center justify-center px-5 md:px-6 py-3 relative w-full"
     >
-      <p className="text-gd-cream text-sm font-normal leading-normal whitespace-pre">
+      <p className="text-foreground text-sm font-normal leading-normal">
         {t('message')}
       </p>
       <button
         onClick={handleClose}
-        className="absolute right-5 md:right-20 border-b border-gd-cream hover:bg-gd-cream/10 transition-colors"
+        className="absolute right-5 md:right-6 border-b border-foreground hover:bg-accent transition-colors"
         aria-label={t('close')}
       >
-        <p className="text-gd-cream text-sm font-normal leading-normal whitespace-pre">
+        <p className="text-foreground text-sm font-normal leading-normal">
           {t('close')}
         </p>
       </button>

@@ -6,129 +6,67 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
-import { getApps } from '@/lib/actions';
-import { AppItem } from './AppItem';
+import { SearchPopup } from './SearchPopup';
+import { Menu, Search, X } from 'lucide-react';
 
-type AppWithScreens = {
-  id: string;
-  name: string;
-  description: string | null;
-  screens?: Array<{
-    id: string;
-    imageUrl: string;
-  }>;
-};
+interface HeaderProps {
+  activeTab?: 'app' | 'flow';
+  onTabChange?: (tab: 'app' | 'flow') => void;
+  hideTabs?: boolean;
+}
 
-export function Header() {
+export function Header({ activeTab = 'app', onTabChange, hideTabs = false }: HeaderProps = {}) {
   const { data: session } = useSession();
   const t = useTranslations('header');
-  const tFooter = useTranslations('footer');
+  const tCategories = useTranslations('categories');
   const tCommon = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [topBarClosed, setTopBarClosed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<AppWithScreens[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Check if top bar is closed and screen size
-  useEffect(() => {
-    const checkTopBar = () => {
-      setTopBarClosed(!!sessionStorage.getItem('topBarClosed'));
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkTopBar();
-    window.addEventListener('resize', checkTopBar);
-    window.addEventListener('storage', checkTopBar);
-    
-    return () => {
-      window.removeEventListener('resize', checkTopBar);
-      window.removeEventListener('storage', checkTopBar);
-    };
-  }, []);
-
-  // Auto-focus search input when drawer opens
+  // Auto-focus search input when popup opens
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [isSearchOpen]);
 
-  // Search functionality
+  // Prevent body scroll when search popup or menu drawer is open
   useEffect(() => {
-    const searchApps = async () => {
-      if (searchQuery.trim().length < 2) {
-        setSearchResults([]);
-        return;
-      }
-
-      setIsSearching(true);
-      const result = await getApps({ search: searchQuery });
-      setIsSearching(false);
-
-      if (result.success && result.data) {
-        setSearchResults(result.data as AppWithScreens[]);
-      }
-    };
-
-    const debounceTimer = setTimeout(searchApps, 300);
-    return () => clearTimeout(debounceTimer);
-  }, [searchQuery]);
-
-  // Prevent body scroll when menu or search is open
-  useEffect(() => {
-    if (isMenuOpen || isSearchOpen) {
+    if (isSearchOpen || isMenuOpen) {
       // Save current scroll position
       const scrollY = window.scrollY;
-      
-      // Apply styles to prevent scrolling
+      // Prevent scrolling
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
-      
-      // Store scroll position
-      document.body.setAttribute('data-scroll-y', scrollY.toString());
     } else {
       // Restore scroll position
-      const scrollY = document.body.getAttribute('data-scroll-y');
-      
-      // Remove styles
+      const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
-      
-      // Restore scroll position
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY));
-        document.body.removeAttribute('data-scroll-y');
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     }
     
     return () => {
       // Cleanup on unmount
-      const scrollY = document.body.getAttribute('data-scroll-y');
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY));
-        document.body.removeAttribute('data-scroll-y');
+      if (!isSearchOpen && !isMenuOpen) {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
       }
     };
-  }, [isMenuOpen, isSearchOpen]);
+  }, [isSearchOpen, isMenuOpen]);
 
   const handleLanguageSwitch = () => {
     const newLocale = locale === 'vi' ? 'en' : 'vi';
@@ -138,7 +76,6 @@ export function Header() {
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
-    setIsMenuOpen(false);
   };
 
   const handleLoginClick = () => {
@@ -151,13 +88,13 @@ export function Header() {
 
   return (
     <>
-      {/* Desktop Header */}
-      <header className="border-b border-gd-cream/[0.12] hidden md:flex items-center justify-center w-full">
-        {/* Logo Section */}
-        <div className="border-r border-gd-cream/[0.12] flex items-center h-40 px-10 w-[30%]">
-          <Link href={`/${locale}`} className="relative w-[191px] h-[42px]">
+      {/* Desktop Header - Fixed left sidebar */}
+      <header className="hidden sm:flex flex-col items-start justify-between w-[15vw] min-w-[200px] h-screen sticky top-0 border-r border-border bg-background px-[24px] py-[48px]">
+        {/* Logo at top */}
+        <div className="w-[70px] h-[100px] relative shrink-0">
+          <Link href={`/${locale}`} className="relative w-full h-full flex items-center justify-center">
             <Image 
-              src="/images/logo.svg" 
+              src="/images/gd-logo.svg" 
               alt={tCommon('logoAlt')}
               fill
               className="object-contain"
@@ -165,223 +102,177 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Button Section */}
-        <div className="w-[40%] flex items-center h-40">
+        {/* Primary Tabs in middle */}
+        {!hideTabs && (
+          <div className="flex flex-col gap-4 items-start w-full">
+            <button
+              onClick={() => onTabChange?.('app')}
+              className={`
+                flex items-center justify-center px-2 py-1 rounded-full transition-all text-[14px]
+                ${activeTab === 'app' 
+                  ? 'bg-secondary text-foreground' 
+                  : 'text-inactive-text hover:text-foreground'
+                }
+              `}
+            >
+              <span className="leading-[1.5] tracking-[0.07px]">
+                {tCategories('primaryTabs.app')}
+              </span>
+            </button>
+            <button
+              onClick={() => onTabChange?.('flow')}
+              className={`
+                flex items-center justify-center px-2 py-1 rounded-full transition-all text-[14px]
+                ${activeTab === 'flow' 
+                  ? 'bg-secondary text-foreground' 
+                  : 'text-inactive-text hover:text-foreground'
+                }
+              `}
+            >
+              <span className="leading-[1.5] tracking-[0.07px]">
+                {tCategories('primaryTabs.flow')}
+              </span>
+            </button>
+          </div>
+        )}
+
+        {/* Bottom section: Search, Language, Login */}
+        <div className="flex flex-col gap-4 items-start w-full">
           <button
             onClick={handleSearchClick}
-            className="flex-1 border-r border-gd-cream/[0.12] h-full flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
+            className="flex items-center justify-center px-2 py-1 rounded-full transition-all text-[14px] hover:text-foreground text-foreground"
           >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal text-center">
+            <span className="leading-[1.5]">
               {t('search')}
-            </p>
-          </button>
-          <button
-            onClick={handleLoginClick}
-            className="flex-1 border-r border-gd-cream/[0.12] h-full flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
-          >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal text-center">
-              {session?.user ? t('logout') : t('login')}
-            </p>
+            </span>
           </button>
           <button
             onClick={handleLanguageSwitch}
-            className="flex-1 border-r border-gd-cream/[0.12] h-full flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
+            className="flex items-center justify-center px-2 py-1 rounded-full transition-all text-[14px] hover:text-foreground text-foreground"
           >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal text-center">
+            <span className="leading-[1.5]">
               {locale === 'vi' ? t('switchToEnglish') : t('switchToVietnamese')}
-            </p>
+            </span>
           </button>
-        </div>
-
-        {/* Copyright Section */}
-        <div className="flex items-center justify-center h-40 px-10 w-[30%]">
-          <p className="text-gd-cream/60 text-sm font-normal leading-normal whitespace-pre">
-            {tFooter('copyright')}
-          </p>
+          <button
+            onClick={handleLoginClick}
+            className="flex items-center justify-center px-2 py-1 rounded-full transition-all text-[14px] hover:text-foreground text-foreground"
+          >
+            <span className="leading-[1.5]">
+              {session?.user ? t('logout') : t('login')}
+            </span>
+          </button>
         </div>
       </header>
 
       {/* Mobile Header */}
-      <header className="border-b border-gd-cream/[0.12] flex md:hidden items-center justify-center w-full">
-        {/* Logo Section */}
-        <div className="flex-1 border-r border-gd-cream/[0.12] flex items-center justify-center h-20 px-5">
-          <Link href={`/${locale}`} className="relative w-[136px] h-[30px]">
+      <header className="flex sm:hidden flex-col w-full bg-background border-b border-border h-[130px]">
+        {/* Top row: Logo, Search and Menu icons */}
+        <div className="flex items-center justify-between px-5 py-4 w-full">
+          <Link href={`/${locale}`} className="relative w-[35px] h-[50px] flex items-center justify-center">
             <Image 
-              src="/images/logo.svg" 
+              src="/images/gd-logo.svg" 
               alt={tCommon('logoAlt')}
               fill
               className="object-contain"
             />
           </Link>
+          <div className="flex items-center gap-0">
+            <button
+              onClick={handleSearchClick}
+              className="flex items-center justify-center w-10 h-10 p-2 rounded-[10px] hover:bg-accent transition-colors"
+              aria-label={t('search')}
+            >
+              <Search className="w-6 h-6" strokeWidth={2} />
+            </button>
+            <button
+              onClick={() => setIsMenuOpen(true)}
+              className="flex items-center justify-center w-10 h-10 p-2 rounded-[10px] hover:bg-accent transition-colors"
+              aria-label="Menu"
+            >
+              <Menu className="w-6 h-6" strokeWidth={2} />
+            </button>
+          </div>
         </div>
 
-        {/* Hamburger Menu Button */}
-        <button
-          onClick={() => {
-            setIsMenuOpen(!isMenuOpen);
-            setIsSearchOpen(false);
-          }}
-          className="flex-1 flex flex-col items-center justify-center h-20 px-5 gap-2"
-          aria-label="Menu"
-        >
-          <div 
-            className={`
-              w-9 h-0.5 bg-gd-cream transition-all duration-300
-              ${isMenuOpen ? 'rotate-45 translate-y-[5px]' : ''}
-            `}
-          />
-          <div 
-            className={`
-              w-9 h-0.5 bg-gd-cream transition-all duration-300
-              ${isMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''}
-            `}
-          />
-        </button>
+        {/* Bottom row: Primary Tabs */}
+        {!hideTabs && (
+          <div className="flex gap-4 items-start px-5 pb-4 w-full">
+            <button
+              onClick={() => onTabChange?.('app')}
+              className={`
+                flex items-center justify-center px-2 py-1 rounded-[10px] transition-all text-[14px]
+                ${activeTab === 'app' 
+                  ? 'bg-secondary text-foreground' 
+                  : 'text-foreground hover:bg-accent'
+                }
+              `}
+            >
+              <span className="leading-[1.5]">
+                {tCategories('primaryTabs.app')}
+              </span>
+            </button>
+            <button
+              onClick={() => onTabChange?.('flow')}
+              className={`
+                flex items-center justify-center px-2 py-1 rounded-[10px] transition-all text-[14px]
+                ${activeTab === 'flow' 
+                  ? 'bg-secondary text-foreground' 
+                  : 'text-foreground hover:bg-accent'
+                }
+              `}
+            >
+              <span className="leading-[1.5]">
+                {tCategories('primaryTabs.flow')}
+              </span>
+            </button>
+          </div>
+        )}
       </header>
 
-      {/* Mobile Menu Drawer */}
-      <div 
-        className={`
-          md:hidden fixed left-0 right-0 bottom-0 bg-gd-dark z-40
-          transition-all duration-300 ease-in-out overflow-hidden
-          border-b border-gd-cream/[0.12]
-          ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-        `}
-        style={{ 
-          top: topBarClosed ? '80px' : '129px' 
-        }} // Below top bar + header or just header
-      >
-        <div className="flex flex-col h-full">
-          {/* 3 Buttons - equally divided */}
-          <button
-            onClick={handleSearchClick}
-            className="flex-1 border-b border-gd-cream/[0.12] flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
-          >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal text-center">
-              {t('search')}
-            </p>
-          </button>
-          <button
-            onClick={handleLoginClick}
-            className="flex-1 border-b border-gd-cream/[0.12] flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
-          >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal text-center">
-              {session?.user ? t('logout') : t('login')}
-            </p>
-          </button>
-          <button
-            onClick={handleLanguageSwitch}
-            className="flex-1 border-b border-gd-cream/[0.12] flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
-          >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal text-center">
-              {locale === 'vi' ? t('switchToEnglish') : t('switchToVietnamese')}
-            </p>
-          </button>
-          
-          {/* Copyright Footer - fixed height */}
-          <div className="flex gap-4 items-center justify-center px-5 py-4 h-[49px]">
-            <p className="text-gd-cream/60 text-sm font-normal leading-normal whitespace-pre">
-              {tFooter('copyright')}
-            </p>
+      {/* Search Popup */}
+      <SearchPopup 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        searchInputRef={searchInputRef}
+      />
+
+      {/* Menu Drawer - Mobile Only */}
+      {isMenuOpen && (
+        <>
+          {/* Overlay */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 sm:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          {/* Drawer */}
+          <div className="fixed inset-0 z-50 flex items-end justify-center sm:hidden pointer-events-none">
+            <div className="w-full h-full max-h-[400px] bg-background rounded-t-[20px] pointer-events-auto overflow-y-auto">
+              <div className="flex flex-col gap-8 px-5 py-8">
+                <button
+                  onClick={handleLanguageSwitch}
+                  className="flex items-center justify-start px-2 py-1 rounded-full transition-all text-[14px] hover:text-foreground text-foreground"
+                >
+                  <span className="leading-[1.5]">
+                    {locale === 'vi' ? t('switchToEnglish') : t('switchToVietnamese')}
+                  </span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleLoginClick();
+                  }}
+                  className="flex items-center justify-start px-2 py-1 rounded-full transition-all text-[14px] hover:text-foreground text-foreground"
+                >
+                  <span className="leading-[1.5]">
+                    {session?.user ? t('logout') : t('login')}
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Search Drawer (Both Desktop and Mobile) */}
-      <div 
-        className={`
-          fixed left-0 right-0 bottom-0 bg-gd-dark z-50
-          transition-all duration-300 ease-in-out overflow-y-auto scrollbar-hide
-          border-t border-gd-cream/[0.12]
-          ${isSearchOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-        `}
-        style={{ 
-          top: topBarClosed 
-            ? (isMobile ? '80px' : '160px')
-            : (isMobile ? '129px' : '209px'),
-          height: topBarClosed
-            ? (isMobile ? 'calc(100svh - 80px)' : 'calc(100svh - 160px)')
-            : (isMobile ? 'calc(100svh - 129px)' : 'calc(100svh - 209px)')
-        }}
-      >
-        {/* Search Field */}
-        <div className="border-b border-gd-cream/[0.12] flex w-full">
-          {/* Input Section */}
-          <div className="flex-1 md:flex-[1486] flex items-center h-20 md:h-40 px-5 md:px-20 border-r border-gd-cream/[0.12]">
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('searchPlaceholder')}
-              className="w-full bg-transparent text-gd-cream/40 text-sm font-normal leading-normal outline-none focus:text-gd-cream hover:text-gd-cream transition-colors placeholder:text-gd-cream/40"
-            />
-          </div>
-          
-          {/* Close Button */}
-          <button
-            onClick={() => {
-              setIsSearchOpen(false);
-              setSearchQuery('');
-              setSearchResults([]);
-            }}
-            className="w-[74px] md:w-[194px] h-20 md:h-40 flex items-center justify-center hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer group"
-          >
-            <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal">
-              {t('close')}
-            </p>
-          </button>
-        </div>
-
-        {/* Search Results */}
-        <div className="flex flex-col w-full">
-          {isSearching && (
-            <div className="w-full text-center py-20">
-              <p className="text-gd-cream/60">{tCommon('loading')}</p>
-            </div>
-          )}
-
-          {!isSearching && searchQuery.length >= 2 && searchResults.length === 0 && (
-            <div className="w-full text-center py-20">
-              <p className="text-gd-cream/60 text-lg">{t('noResults')}</p>
-            </div>
-          )}
-
-          {!isSearching && searchResults.length > 0 && (
-            <div className="flex flex-wrap w-full border-b border-gd-cream/[0.12]">
-              {searchResults.map((app, index) => {
-                const isLastRowDesktop = index >= searchResults.length - (searchResults.length % 4 || 4);
-                const isLastRowMobile = index >= searchResults.length - (searchResults.length % 2 || 2);
-
-                return (
-                  <div
-                    key={app.id}
-                    className={`
-                      w-1/2 md:w-1/4
-                      flex
-                      border-r border-gd-cream/[0.12]
-                      border-b border-gd-cream/[0.12]
-                      md:[&:nth-child(4n)]:border-r-0
-                      [&:nth-child(2n)]:border-r-0
-                      md:[&:nth-child(2n)]:border-r
-                      ${isLastRowMobile ? 'max-md:border-b-0' : ''}
-                      ${isLastRowDesktop ? 'md:border-b-0' : ''}
-                    `}
-                  >
-                    <AppItem
-                      id={app.id}
-                      name={app.name}
-                      description={app.description || ''}
-                      thumbnailUrl={app.screens?.[0]?.imageUrl}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
+        </>
+      )}
     </>
   );
 }
