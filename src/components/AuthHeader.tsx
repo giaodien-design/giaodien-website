@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 
 export function AuthHeader() {
   const t = useTranslations('header');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const pathname = usePathname();
 
@@ -22,10 +23,10 @@ export function AuthHeader() {
       <div className="hidden md:flex flex-col h-full border-r border-gd-cream/[0.12]">
         {/* Logo Container - grows to push button to bottom */}
         <div className="flex-1 border-b border-gd-cream/[0.12] flex items-center justify-center px-5">
-          <Link href={`/${locale}`} className="relative w-[191px] h-[42px]">
+          <Link href={`/${locale}`} className="relative w-[70px] h-[100px]">
             <Image
-              src="/images/logo.svg"
-              alt="Logo"
+              src="/images/logo-2.svg"
+              alt={tCommon('logoAlt')}
               fill
               className="object-contain"
             />
@@ -47,10 +48,10 @@ export function AuthHeader() {
       <div className="md:hidden border-b border-gd-cream/[0.12] flex items-center w-full">
         {/* Logo Section */}
         <div className="flex-1 border-r border-gd-cream/[0.12] h-20 flex items-center justify-center px-5">
-          <Link href={`/${locale}`} className="relative w-[136px] h-[30px]">
+          <Link href={`/${locale}`} className="relative w-[35px] h-[50px]">
             <Image
-              src="/images/logo.svg"
-              alt="Logo"
+              src="/images/logo-2.svg"
+              alt={tCommon('logoAlt')}
               fill
               className="object-contain"
             />

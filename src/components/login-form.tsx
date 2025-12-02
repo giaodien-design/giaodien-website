@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useTranslations, useLocale } from 'next-intl';
 
-export function LoginForm() {
+interface LoginFormProps {
+  onSwitchToSignup?: () => void;
+}
+
+export function LoginForm({ onSwitchToSignup }: LoginFormProps = {}) {
   const t = useTranslations('auth');
   const locale = useLocale();
   const [email, setEmail] = useState("");
@@ -67,8 +70,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="flex flex-col gap-6 items-center justify-center h-full p-20 md:p-20 max-md:p-5 w-full">
-      <form onSubmit={handleEmailSignIn} className="w-full max-w-[680px] flex flex-col gap-6">
+    <form onSubmit={handleEmailSignIn} className="flex flex-col gap-4">
         {/* Email Input */}
         <input
           type="email"
@@ -77,18 +79,16 @@ export function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading || isGoogleLoading}
           required
-          className="w-full border border-gd-cream/[0.12] bg-transparent p-5 text-gd-cream/40 text-sm placeholder:text-gd-cream/40 focus:text-gd-cream focus:outline-none focus:border-gd-cream hover:border-gd-cream transition-colors"
+          className="w-full p-3 border border-border-new rounded-lg bg-primary-bg text-xs leading-none text-primary-fg placeholder:text-secondary-fg outline-none focus:border-primary-fg disabled:opacity-50"
         />
 
         {/* Error/Success Message */}
         {message && (
-          <div
-            className={`p-4 text-sm text-center ${
-              message.type === "error"
-                ? "text-red-400 border border-red-400/20"
-                : "text-green-400 border border-green-400/20"
-            }`}
-          >
+          <div className={`p-3 rounded-lg text-sm leading-relaxed text-center ${
+            message.type === 'error' 
+              ? 'bg-red-50 text-red-600 border border-red-200' 
+              : 'bg-green-50 text-green-600 border border-green-200'
+          }`}>
             {message.text}
           </div>
         )}
@@ -97,7 +97,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isLoading || isGoogleLoading}
-          className="w-full bg-gd-cream p-5 text-gd-dark text-sm font-normal hover:bg-gd-cream/90 transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center p-3 rounded-lg bg-reverse-bg text-reverse-fg text-xs leading-none uppercase font-normal border-none cursor-pointer transition-colors hover:bg-reverse-hover-bg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? t('sending') : t('login')}
         </button>
@@ -107,24 +107,26 @@ export function LoginForm() {
           type="button"
           onClick={handleGoogleSignIn}
           disabled={isLoading || isGoogleLoading}
-          className="w-full border border-gd-cream p-5 text-gd-cream text-sm font-normal hover:bg-gd-cream/10 transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center p-3 rounded-lg bg-secondary-bg text-primary-fg text-xs leading-none uppercase font-normal border border-border-new cursor-pointer transition-colors hover:bg-hover-bg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isGoogleLoading ? t('loggingIn') : t('continueWithGoogle')}
         </button>
 
         {/* Terms Text */}
-        <p className="text-gd-cream/40 text-sm text-center w-full">
-          {t('terms')} <span className="text-gd-cream underline">{t('termsOfService')}</span> {t('and')} <span className="text-gd-cream underline">{t('privacyPolicy')}</span> {locale === 'vi' ? t('ofUs') : '.'}
+        <p className="text-sm leading-relaxed text-secondary-fg text-center m-0">
+          {t('terms')} <span className="text-primary-fg underline cursor-pointer">{t('termsOfService')}</span> {t('and')} <span className="text-primary-fg underline cursor-pointer">{t('privacyPolicy')}</span>{locale === 'vi' ? ` ${t('ofUs')}` : '.'}
         </p>
 
         {/* Signup Link */}
-        <Link
-          href={`/${locale}/signup`}
-          className="text-gd-cream text-sm text-center border-b border-gd-cream inline-block mx-auto hover:text-gd-cream/80 transition-colors"
-        >
-          {t('dontHaveAccount')}
-        </Link>
+        {onSwitchToSignup ? (
+          <button
+            type="button"
+            onClick={onSwitchToSignup}
+            className="self-center p-2 rounded-lg bg-secondary-bg text-primary-fg text-xs leading-none uppercase font-normal border-none cursor-pointer transition-colors hover:bg-hover-bg"
+          >
+            {t('dontHaveAccount')}
+          </button>
+        ) : null}
       </form>
-    </div>
   );
 }

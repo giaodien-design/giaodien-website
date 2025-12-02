@@ -4,24 +4,25 @@ import React from "react"
 import { TabsAndAppList } from './TabsAndAppList'
 import { FlowGrid } from './FlowItem'
 import { useEffect, useState } from "react";
-import { getApps, getTypes } from "@/lib/actions"
+import { getApps, getCategories } from "@/lib/actions"
 import { useTranslations } from 'next-intl'
 
 type AppWithScreens = {
   id: string;
   name: string;
   description: string | null;
+  icon: string | null;
+  thumbnailUrl: string | null;
   screens?: Array<{
     id: string;
     imageUrl: string;
   }>;
 };
 
-type Type = {
+type Category = {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
 };
 
 interface AppGridContainerProps {
@@ -33,7 +34,7 @@ export function AppGridContainer({ activeTab, onTabChange }: AppGridContainerPro
   const tApps = useTranslations('apps');
   const tCommon = useTranslations('common');
   const [apps, setApps] = useState<AppWithScreens[]>([]);
-  const [types, setTypes] = useState<Type[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -41,17 +42,17 @@ export function AppGridContainer({ activeTab, onTabChange }: AppGridContainerPro
     if (activeTab === 'app') {
       const fetchData = async () => {
         setLoading(true);
-        const [appsResult, typesResult] = await Promise.all([
+        const [appsResult, categoriesResult] = await Promise.all([
           getApps(),
-          getTypes()
+          getCategories()
         ]);
         
         if (appsResult.success && appsResult.data) {
           setApps(appsResult.data);
         }
         
-        if (typesResult.success && typesResult.data) {
-          setTypes(typesResult.data);
+        if (categoriesResult.success && categoriesResult.data) {
+          setCategories(categoriesResult.data);
         }
         
         setLoading(false);
@@ -66,7 +67,7 @@ export function AppGridContainer({ activeTab, onTabChange }: AppGridContainerPro
   // Flows mode - show FlowGrid
   if (activeTab === 'flow') {
     return (
-      <div className="flex flex-col w-full bg-background min-w-0 max-w-full">
+      <div className="flex flex-col w-full bg-primary-bg min-w-0 max-w-full">
         <FlowGrid />
       </div>
     );
@@ -75,16 +76,16 @@ export function AppGridContainer({ activeTab, onTabChange }: AppGridContainerPro
   // Apps mode - show TabsAndAppList
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center p-20 w-full bg-background">
-        <p className="text-muted-foreground">{tCommon('loading')}</p>
+      <div className="flex flex-col items-center justify-center p-20 w-full bg-primary-bg">
+        <p className="text-secondary-fg">{tCommon('loading')}</p>
       </div>
     );
   }
   
   if (!apps.length) {
     return (
-      <div className="flex flex-col items-center justify-center p-20 w-full bg-background">
-        <p className="text-muted-foreground">{tApps('noData')}</p>
+      <div className="flex flex-col items-center justify-center p-20 w-full bg-primary-bg">
+        <p className="text-secondary-fg">{tApps('noData')}</p>
       </div>
     );
   }
@@ -92,7 +93,7 @@ export function AppGridContainer({ activeTab, onTabChange }: AppGridContainerPro
   return (
     <TabsAndAppList 
       initialApps={apps} 
-      types={types}
+      categories={categories}
       activeTab={activeTab}
       onTabChange={onTabChange}
     />

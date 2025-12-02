@@ -7,6 +7,7 @@
     "search": "Tìm kiếm",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
+    "pricing": "Bảng giá",
     "switchToEnglish": "Chuyển sang tiếng Anh",
     "switchToVietnamese": "Switch to Vietnamese",
     "searchPlaceholder": "Tìm kiếm...",
@@ -50,7 +51,17 @@
       "finance": "Tài chính",
       "entertainment": "Giải trí",
       "lifestyle": "Đời sống",
-      "productivity": "Hiệu suất"
+      "productivity": "Hiệu suất",
+      "business": "Kinh doanh",
+      "education": "Giáo dục",
+      "social": "Mạng xã hội",
+      "health": "Sức khỏe",
+      "food": "Ẩm thực",
+      "shopping": "Mua sắm",
+      "travel": "Du lịch",
+      "news": "Tin tức",
+      "utilities": "Tiện ích",
+      "sports": "Thể thao"
     }
   },
   "apps": {
@@ -106,6 +117,76 @@
     "tryDifferent": "Hãy thử từ khóa khác",
     "allApps": "Tất cả ứng dụng",
     "filterResults": "Lọc kết quả"
+  },
+  "pricing": {
+    "title": "Bảng giá đơn giản, minh bạch",
+    "subtitle": "Chọn gói phù hợp với nhu cầu của bạn. Luôn linh hoạt để phát triển cùng bạn.",
+    "popular": "Phổ Biến Nhất",
+    "free": "Miễn phí",
+    "plans": {
+      "free": {
+        "name": "Miễn phí",
+        "period": "mãi mãi",
+        "description": "Hoàn hảo cho cá nhân và dự án nhỏ",
+        "features": {
+          "0": "Truy cập các giao diện cơ bản",
+          "1": "100 lượt xem màn hình mỗi tháng",
+          "2": "Hỗ trợ cộng đồng",
+          "3": "Tìm kiếm cơ bản"
+        },
+        "cta": "Bắt Đầu"
+      },
+      "pro": {
+        "name": "Pro",
+        "period": "tháng",
+        "description": "Tốt nhất cho chuyên gia và nhóm đang phát triển",
+        "features": {
+          "0": "Xem màn hình không giới hạn",
+          "1": "Tìm kiếm và lọc nâng cao",
+          "2": "Tải xuống tài nguyên chất lượng cao",
+          "3": "Hỗ trợ email ưu tiên",
+          "4": "Truy cập sớm tính năng mới",
+          "5": "Giấy phép sử dụng thương mại"
+        },
+        "cta": "Dùng Thử Miễn Phí"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "priceText": "Tùy chỉnh",
+        "period": "liên hệ",
+        "description": "Cho các nhóm lớn với nhu cầu đặc biệt",
+        "features": {
+          "0": "Tất cả tính năng Pro",
+          "1": "Tích hợp tùy chỉnh",
+          "2": "Quản lý tài khoản chuyên trách",
+          "3": "Hỗ trợ cao cấp 24/7",
+          "4": "Phân tích nâng cao",
+          "5": "SLA tùy chỉnh"
+        },
+        "cta": "Liên Hệ Sales"
+      }
+    },
+    "faq": {
+      "title": "Câu Hỏi Thường Gặp",
+      "questions": {
+        "0": {
+          "question": "Tôi có thể thay đổi gói sau này không?",
+          "answer": "Có, bạn có thể nâng cấp hoặc hạ cấp gói bất cứ lúc nào. Thay đổi sẽ có hiệu lực trong chu kỳ thanh toán tiếp theo."
+        },
+        "1": {
+          "question": "Bạn chấp nhận phương thức thanh toán nào?",
+          "answer": "Chúng tôi chấp nhận tất cả thẻ tín dụng, thẻ ghi nợ chính và chuyển khoản ngân hàng cho gói Enterprise."
+        },
+        "2": {
+          "question": "Có dùng thử miễn phí cho gói Pro không?",
+          "answer": "Có, chúng tôi cung cấp dùng thử miễn phí 14 ngày cho gói Pro mà không cần thẻ tín dụng."
+        },
+        "3": {
+          "question": "Tôi có thể hủy bất cứ lúc nào không?",
+          "answer": "Có, bạn có thể hủy đăng ký bất cứ lúc nào. Bạn sẽ tiếp tục được truy cập đến cuối chu kỳ thanh toán."
+        }
+      }
+    }
   }
 }
 

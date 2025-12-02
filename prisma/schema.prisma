@@ -15,40 +15,73 @@ datasource db {
 }
 
 model App {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  icon          String?   // URL icon/logo của app
+  thumbnailUrl  String?   // Thumbnail image URL
+  legacyCategory String?  // Legacy category field (deprecated, kept for data migration)
+  categoryId    String?   // New category relation
+  category      Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  platform      Platform  @default(IOS)
+  brandColor    String?   // Màu chủ đạo của app (hex code)
+  websiteUrl    String?
+  slug          String    @unique // URL-friendly name: instagram, spotify, etc.
+  sortOrder     Int       @default(0)
+  
+  // Relations
+  screens       Screen[]
+  
+  // Metadata
+  isPublished   Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([legacyCategory])
+  @@index([categoryId])
+  @@index([platform])
+  @@index([slug])
+  @@index([isPublished, createdAt(sort: Desc)])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  apps        App[]
+  
+  @@index([slug])
+}
+
+model Flow {
   id          String   @id @default(cuid())
   name        String
   description String?
-  icon        String?  // URL icon/logo of the app
-  category    String?  // Social, Finance, Productivity, E-commerce, etc.
-  platform    Platform @default(IOS)
-  brandColor  String?  // Main brand color of the app (hex code)
-  websiteUrl  String?
-  slug        String   @unique // URL-friendly name: instagram, spotify, etc.
+  sortOrder   Int      @default(0)
   
   // Relations
   screens     Screen[]
-  appTypes    AppType[]  // Many-to-many relation with Type
   
   // Metadata
-  isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([category])
-  @@index([platform])
-  @@index([slug])
-  @@index([name])
 }
 
 model Screen {
   id          String   @id @default(cuid())
   title       String
   description String?
-  imageUrl    String   // Screenshot image URL
+  imageUrl    String   // URL ảnh screenshot
   
   // Relations
   appId       String
   app         App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+  flowId      String?
+  flow        Flow?    @relation(fields: [flowId], references: [id], onDelete: SetNull)
   
   // Categorization
   screenType  String?  // Login, Home, Profile, Settings, Onboarding, Checkout, etc.
@@ -64,92 +97,14 @@ model Screen {
   updatedAt   DateTime @updatedAt
 
   @@index([appId])
+  @@index([flowId])
   @@index([screenType])
   @@index([viewCount])
   @@index([likeCount])
-}
-
-model Type {
-  id          String    @id @default(cuid())
-  name        String    @unique  // Transportation, Finance, Entertainment, Lifestyle, Productivity
-  slug        String    @unique
-  description String?
-  icon        String?
-  
-  // Relations
-  apps        AppType[]
-  
-  // Metadata
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([slug])
-}
-
-model AppType {
-  id        String   @id @default(cuid())
-  
-  // Relations
-  appId     String
-  app       App      @relation(fields: [appId], references: [id], onDelete: Cascade)
-  
-  typeId    String
-  type      Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
-  
-  createdAt DateTime @default(now())
-
-  @@unique([appId, typeId])
-  @@index([appId])
-  @@index([typeId])
 }
 
 enum Platform {
   IOS
   ANDROID
   WEB
-}
-
-// NextAuth.js Models
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([email])
-}
-
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-  @@index([userId])
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
 }

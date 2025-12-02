@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
 import { getAppById } from '@/lib/actions';
-import { getTranslations } from 'next-intl/server';
-import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { AppDetailsBody } from '@/components/AppDetailsBody';
 
 interface PageProps {
   params: {
@@ -13,10 +12,9 @@ interface PageProps {
 }
 
 export default async function AppDetailPage({ params }: PageProps) {
-  const { id } = params;
-  const t = await getTranslations('appDetail');
-  const tCommon = await getTranslations('common');
-
+  // Await params in Next.js 15+
+  const { id } = await params;
+  
   // Fetch app data
   const result = await getAppById(id);
 
@@ -25,136 +23,14 @@ export default async function AppDetailPage({ params }: PageProps) {
   }
 
   const app = result.data;
-  const screens = app.screens || [];
-
-  // Use demo images for now (10 screens)
-  const demoScreens = Array.from({ length: 10 }, (_, i) => ({
-    id: `demo-${i + 1}`,
-    imageUrl: '/images/sample-img.png',
-  }));
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Desktop: Header fixed on left, Body scrollable on right */}
-      <div className="hidden sm:flex w-full">
-        <Header hideTabs={true} />
-        <div className="flex-1 overflow-y-auto min-w-0 w-full">
-          {/* App Header Section */}
-          <div className="flex gap-6 items-center px-6 py-5 border-b border-border">
-            <div className="relative w-20 h-20 rounded-[4px] shrink-0 overflow-hidden">
-              <Image
-                src="/images/sample-app-thumbnail.png"
-                alt={app.name}
-                fill
-                className="object-cover rounded-[4px]"
-              />
-            </div>
-            <div className="flex flex-col gap-1 flex-1 min-w-0">
-              <h1 className="text-foreground text-base font-normal leading-[1.5] w-full">
-                {app.name}
-              </h1>
-              <p className="text-muted-foreground text-sm font-normal leading-[1.5] tracking-[0.07px] w-full">
-                {app.description || ''}
-              </p>
-            </div>
-          </div>
-
-          {/* Screen Grid - 4 items per row on desktop */}
-          {demoScreens.length === 0 ? (
-            <div className="w-full text-center py-20 border-b border-border">
-              <p className="text-muted-foreground text-base">{t('noScreenYet')}</p>
-            </div>
-          ) : (
-            <div className="flex flex-col w-full">
-              {Array.from({ length: Math.ceil(demoScreens.length / 4) }).map((_, rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className="grid grid-cols-2 md:grid-cols-4 w-full border-b border-border"
-                >
-                  {demoScreens.slice(rowIndex * 4, rowIndex * 4 + 4).map((screen, colIndex) => (
-                    <div
-                      key={screen.id}
-                      className={`flex flex-col items-center justify-center px-6 py-8 border-r border-border ${colIndex === 1 ? 'border-r-0' : ''} md:${colIndex === 3 ? 'border-r-0' : 'border-r'}`}
-                    >
-                      <div className="aspect-[249/540] w-full relative rounded-[10px] overflow-hidden">
-                        <Image
-                          src={screen.imageUrl}
-                          alt={`${app.name} - Screen ${rowIndex * 4 + colIndex + 1}`}
-                          fill
-                          className="object-cover object-center rounded-[10px]"
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <Footer />
-        </div>
-      </div>
-
-      {/* Mobile/Tablet: Header on top, Body below */}
-      <div className="flex sm:hidden flex-col w-full">
-        <Header hideTabs={true} />
-        <div className="flex-1 overflow-y-auto">
-          {/* App Header Section */}
-          <div className="flex gap-6 items-center p-5 border-b border-border">
-            <div className="relative w-20 h-20 rounded-[4px] shrink-0 overflow-hidden">
-              <Image
-                src="/images/sample-app-thumbnail.png"
-                alt={app.name}
-                fill
-                className="object-cover rounded-[4px]"
-              />
-            </div>
-            <div className="flex flex-col gap-1 flex-1 min-w-0">
-              <h1 className="text-foreground text-base font-normal leading-[1.5] w-full">
-                {app.name}
-              </h1>
-              <p className="text-muted-foreground text-sm font-normal leading-[1.5] tracking-[0.07px] w-full">
-                {app.description || ''}
-              </p>
-            </div>
-          </div>
-
-          {/* Screen Grid - 2 items per row on mobile */}
-          {demoScreens.length === 0 ? (
-            <div className="w-full text-center py-20 border-b border-border">
-              <p className="text-muted-foreground text-base">{t('noScreenYet')}</p>
-            </div>
-          ) : (
-            <div className="flex flex-col w-full">
-              {Array.from({ length: Math.ceil(demoScreens.length / 2) }).map((_, rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className="grid grid-cols-2 w-full border-b border-border"
-                >
-                  {demoScreens.slice(rowIndex * 2, rowIndex * 2 + 2).map((screen, colIndex) => (
-                    <div
-                      key={screen.id}
-                      className={`flex flex-col items-center justify-center px-6 py-8 border-r border-border ${colIndex === 1 ? 'border-r-0' : ''}`}
-                    >
-                      <div className="aspect-[249/540] w-full relative rounded-[10px] overflow-hidden">
-                        <Image
-                          src={screen.imageUrl}
-                          alt={`${app.name} - Screen ${rowIndex * 2 + colIndex + 1}`}
-                          fill
-                          className="object-cover object-center rounded-[10px]"
-                          sizes="50vw"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <Footer />
-        </div>
+    <div className="min-h-screen bg-primary-bg flex flex-col w-full">
+      <Header hideTabs={true} />
+      
+      <div className="flex-1 overflow-y-auto">
+        <AppDetailsBody app={app} />
+        <Footer />
       </div>
     </div>
   );

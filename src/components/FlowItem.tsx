@@ -1,73 +1,121 @@
 'use client';
 
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 
+interface Screen {
+  id: string;
+  imageUrl: string;
+  title: string;
+}
+
 interface FlowItemProps {
   id: string;
   name: string;
-  index?: number;
+  description?: string | null;
+  screens?: Screen[];
+  isLast?: boolean;
 }
 
-// Dummy flow data for now
-const dummyFlows = [
-  { id: '1', name: 'Onboarding' },
-  { id: '2', name: 'Login & Signup' },
-  { id: '3', name: 'Booking' },
-  { id: '4', name: 'Filtering' },
-];
-
-export function FlowItem({ id, name, index: itemIndex }: FlowItemProps & { index?: number }) {
+export function FlowItem({ id, name, description, screens = [], isLast = false }: FlowItemProps) {
   const locale = useLocale();
-  // On desktop: right border for even indices (left column), bottom border for mobile
-  const isLeftColumn = itemIndex !== undefined && itemIndex % 2 === 0;
+  
+  // Only show screens if they exist - no dummy data
+  const displayScreens = screens.slice(0, 8); // Show max 8 screens
   
   return (
-    <Link href={`/${locale}/flow/${id}`} className={`flex flex-col gap-4 items-start pl-6 py-8 w-full min-w-0 border-b md:border-b-0 ${isLeftColumn ? 'md:border-r border-border' : ''}`}>
-      {/* Image List - Horizontal */}
-      <div className="flex gap-6 items-center w-full overflow-x-auto scrollbar-hide -mr-6 md:mr-0 pr-6 md:pr-0">
-        {/* Three images */}
-        {[1, 2, 3].map((imgIndex) => (
-          <div key={imgIndex} className="bg-secondary flex items-center p-6 rounded-[10px] shrink-0 md:flex-1 md:min-w-0">
-            <div className="aspect-[249/540] w-[212px] md:w-full relative rounded-[10px]">
+    <Link href={`/${locale}/flow/${id}`} className={`flex flex-col items-start w-full min-w-0 flow-card ${!isLast ? 'border-b border-border-new' : ''}`}>
+      {/* Screenshot Container - Horizontal Scrollable */}
+      {displayScreens.length > 0 ? (
+        <div className="flex items-center w-full flow-card-screenshot-container scrollbar-hide">
+          {displayScreens.map((screen) => (
+            <div 
+              key={screen.id} 
+              className="relative shrink-0 flow-card-screenshot flow-card-screenshot-mobile md:flow-card-screenshot-desktop"
+            >
               <Image
-                src="/images/sample-img.png"
-                alt={`${name} - Step ${imgIndex}`}
+                src={screen.imageUrl}
+                alt={screen.title || name}
                 fill
-                className="object-cover object-center rounded-[10px]"
-                sizes="(max-width: 768px) 212px, 50vw"
+                className="object-cover object-center rounded-[24px]"
+                sizes="(max-width: 768px) 220px, 180px"
               />
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center w-full py-12 flow-card-screenshot-container">
+          <p className="text-secondary-fg text-sm">No screens available</p>
+        </div>
+      )}
       
-      {/* Title */}
-      <h3 className="text-foreground text-base font-normal leading-[1.5] w-full">
-        {name}
-      </h3>
+      {/* Content: Flow name and counter */}
+      <div className="flex flex-col items-start flow-card-content">
+        <h3 className="flow-card-name leading-none">
+          {name}
+        </h3>
+        <p className="flow-card-counter leading-none">
+          {screens.length} screen{screens.length !== 1 ? 's' : ''}
+        </p>
+      </div>
     </Link>
   );
 }
 
 // Export a component to render all flows
 export function FlowGrid() {
+  const [flows, setFlows] = React.useState<Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    screens: Screen[];
+  }>>([]);
+  const [loading, setLoading] = React.useState(true);
+  
+  React.useEffect(() => {
+    const fetchFlows = async () => {
+      const { getAllFlows } = await import('@/lib/actions');
+      const result = await getAllFlows();
+      
+      if (result.success && result.data) {
+        setFlows(result.data);
+      }
+      setLoading(false);
+    };
+    
+    fetchFlows();
+  }, []);
+  
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 w-full">
+        <p className="text-secondary-fg">Loading flows...</p>
+      </div>
+    );
+  }
+  
+  if (flows.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 w-full">
+        <p className="text-secondary-fg">No flows available</p>
+      </div>
+    );
+  }
+  
   return (
-    <div className="flex flex-col w-full">
-      {/* First row - 2 flows */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] w-full border-b border-border">
-        {dummyFlows.slice(0, 2).map((flow, idx) => (
-          <FlowItem key={flow.id} id={flow.id} name={flow.name} index={idx} />
-        ))}
-      </div>
-      {/* Second row - 2 flows */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] w-full border-t border-border md:border-t-0">
-        {dummyFlows.slice(2, 4).map((flow, idx) => (
-          <FlowItem key={flow.id} id={flow.id} name={flow.name} index={idx + 2} />
-        ))}
-      </div>
+    <div className="flex flex-col w-full p-6 px-4 py-6 sm:p-6 gap-y-12">
+      {flows.map((flow, idx) => (
+        <FlowItem 
+          key={flow.id} 
+          id={flow.id} 
+          name={flow.name}
+          description={flow.description}
+          screens={flow.screens}
+          isLast={idx === flows.length - 1}
+        />
+      ))}
     </div>
   );
 }
-

@@ -63,10 +63,10 @@ const createAppSchema = z.object({
 // Get all apps with optional filtering and search
 export async function getApps(params?: {
   search?: string;
-  typeId?: string;
+  categoryId?: string;
 }) {
   try {
-    const { search, typeId } = params || {};
+    const { search, categoryId } = params || {};
 
     const where: any = { isPublished: true };
 
@@ -78,24 +78,16 @@ export async function getApps(params?: {
       ];
     }
 
-    // Filter by type
-    if (typeId) {
-      where.appTypes = {
-        some: {
-          typeId: typeId,
-        },
-      };
+    // Filter by category
+    if (categoryId) {
+      where.categoryId = categoryId;
     }
 
     const apps = await prisma.app.findMany({
       where,
       include: {
         screens: true,
-        appTypes: {
-          include: {
-            type: true,
-          },
-        },
+        category: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -117,21 +109,16 @@ export async function getAppById(appId: string) {
     const app = await prisma.app.findUnique({
       where: { 
         id: validatedId,
-        isPublished: true,
       },
       include: {
         screens: {
           orderBy: { createdAt: "asc" },
         },
-        appTypes: {
-          include: {
-            type: true,
-          },
-        },
+        category: true,
       },
     });
 
-    if (!app) {
+    if (!app || !app.isPublished) {
       return { success: false, error: "App not found" };
     }
 
@@ -146,16 +133,16 @@ export async function getAppById(appId: string) {
   }
 }
 
-// Get all types
-export async function getTypes() {
+// Get all categories
+export async function getCategories() {
   try {
-    const types = await prisma.type.findMany({
+    const categories = await prisma.category.findMany({
       orderBy: { name: "asc" },
     });
-    return { success: true, data: types };
+    return { success: true, data: categories };
   } catch (error) {
-    console.error("Failed to fetch types:", error);
-    return { success: false, error: "Failed to fetch types" };
+    console.error("Failed to fetch categories:", error);
+    return { success: false, error: "Failed to fetch categories" };
   }
 }
 
@@ -268,5 +255,122 @@ export async function deleteApp(appId: string) {
     }
     console.error("Failed to delete app:", error);
     return { success: false, error: "Failed to delete app" };
+  }
+}
+
+// Zod schema for Flow creation
+const createFlowSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must be less than 100 characters")
+    .trim()
+    .regex(
+      /^[a-zA-Z0-9\s\-_]+$/,
+      "Name can only contain letters, numbers, spaces, hyphens and underscores"
+    ),
+
+  description: z
+    .string()
+    .max(500, "Description must be less than 500 characters")
+    .trim()
+    .optional()
+    .nullable()
+    .transform((val) => {
+      if (!val) return null;
+      // Strip any HTML tags
+      return val.replace(/<[^>]*>/g, "");
+    }),
+
+  sortOrder: z
+    .number()
+    .int()
+    .min(0)
+    .optional()
+    .default(0),
+});
+
+// Get all flows
+export async function getAllFlows() {
+  try {
+    const flows = await prisma.flow.findMany({
+      include: {
+        screens: {
+          where: {
+            flowId: { not: null },
+          },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+      orderBy: { sortOrder: "asc" },
+    });
+
+    return { success: true, data: flows };
+  } catch (error) {
+    console.error("Failed to fetch flows:", error);
+    return { success: false, error: "Failed to fetch flows" };
+  }
+}
+
+// Get single flow by ID
+export async function getFlowById(flowId: string) {
+  try {
+    // Validate ID format
+    const idSchema = z.string().cuid("Invalid flow ID format");
+    const validatedId = idSchema.parse(flowId);
+
+    const flow = await prisma.flow.findUnique({
+      where: { id: validatedId },
+      include: {
+        screens: {
+          orderBy: { createdAt: "asc" },
+        },
+      },
+    });
+
+    if (!flow) {
+      return { success: false, error: "Flow not found" };
+    }
+
+    return { success: true, data: flow };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Invalid ID:", error.issues);
+      return { success: false, error: "Invalid flow ID" };
+    }
+    console.error("Failed to fetch flow:", error);
+    return { success: false, error: "Failed to fetch flow" };
+  }
+}
+
+// Create new flow with XSS protection
+export async function createFlow(formData: FormData) {
+  try {
+    // 🛡️ Validate and sanitize input
+    const validated = createFlowSchema.parse({
+      name: formData.get("name"),
+      description: formData.get("description") || null,
+      sortOrder: formData.get("sortOrder") 
+        ? parseInt(formData.get("sortOrder") as string, 10)
+        : 0,
+    });
+
+    // Safe to use validated data
+    await prisma.flow.create({
+      data: validated,
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Return validation errors to user
+      console.error("Validation error:", error.issues);
+      throw new Error(
+        error.issues.map((e: z.ZodIssue) => e.message).join(", ")
+      );
+    }
+    console.error("Failed to create flow:", error);
+    throw new Error("Failed to create flow");
   }
 }

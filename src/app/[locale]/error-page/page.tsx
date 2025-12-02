@@ -27,7 +27,7 @@ export default function ErrorPage() {
   const error = searchParams.get("error") || "Default";
 
   return (
-    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+    <div className="bg-primary-bg flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6 text-center">
           <div className="flex flex-col items-center gap-4">
@@ -38,12 +38,12 @@ export default function ErrorPage() {
           </div>
 
           <div className="space-y-4">
-            <p className="text-muted-foreground">
+            <p className="text-secondary-fg">
               {errorMessages[error] || errorMessages.Default}
             </p>
 
             {error === "OAuthAccountNotLinked" && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-secondary-fg">
                 Nếu bạn đã đăng ký bằng email, vui lòng sử dụng phương thức đăng
                 nhập email. Nếu bạn đã đăng ký bằng Google, vui lòng sử
                 dụng&nbsp;
@@ -56,9 +56,6 @@ export default function ErrorPage() {
           </div>
 
           <div className="flex flex-col gap-3 pt-4">
-            <Button asChild>
-              <Link href="/login">Quay lại trang đăng nhập</Link>
-            </Button>
             <Button variant="outline" asChild>
               <Link href="/">Về trang chủ</Link>
             </Button>

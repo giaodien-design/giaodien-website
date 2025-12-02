@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 
 interface AppItemProps {
   id: string;
@@ -10,46 +10,91 @@ interface AppItemProps {
   description: string;
   thumbnailUrl?: string | null;
   logoUrl?: string | null;
+  screenCount?: number;
+  flowCount?: number;
 }
 
-export function AppItem({ id, name, description, thumbnailUrl, logoUrl }: AppItemProps) {
-  const t = useTranslations('common');
+export function AppItem({ id, name, description, thumbnailUrl, logoUrl, screenCount = 0, flowCount = 0 }: AppItemProps) {
+  const locale = useLocale();
+  
+  // Helper function to validate image URLs
+  // Returns the URL if it's a local path or configured external domain, otherwise returns fallback
+  const getValidImageUrl = (url: string | null | undefined, fallback: string): string => {
+    if (!url) return fallback;
+    
+    // If it's a local path (starts with /), use it directly
+    if (url.startsWith('/')) return url;
+    
+    // If it's an external URL, check if it's from a configured domain
+    // For now, we'll use fallback for any external URLs that might not be configured
+    // This prevents the Next.js image error
+    try {
+      const urlObj = new URL(url);
+      // Check if it's from the configured S3 domain
+      if (urlObj.hostname === 'giaodien-website-image.s3.ap-southeast-1.amazonaws.com') {
+        return url;
+      }
+      // For other external URLs, use fallback to avoid configuration errors
+      return fallback;
+    } catch {
+      // Invalid URL format, use fallback
+      return fallback;
+    }
+  };
+  
+  const validThumbnailUrl = getValidImageUrl(thumbnailUrl, "/images/sample-img.png");
+  const validLogoUrl = getValidImageUrl(logoUrl, "/images/sample-app-thumbnail.png");
   
   return (
-    <Link href={`/app/${id}`} className="flex flex-col w-full h-full group">
+    <Link href={`/${locale}/app/${id}`} className="flex flex-col w-full h-full group">
       {/* Card Container */}
-      <div className="flex flex-col gap-4 items-center justify-center px-6 py-8 w-full h-full border-border border-r-0 sm:border-r sm:[&:nth-child(2n)]:border-r-0 md:[&:nth-child(3n)]:border-r-0 border-t-0 [&:nth-child(n+2)]:border-t sm:[&:nth-child(n+2)]:border-t-0 sm:[&:nth-child(2n+3)]:border-t md:[&:nth-child(n+3)]:border-t-0 md:[&:nth-child(n+4)]:border-t border-b">
-        {/* Image Container */}
-        <div className="bg-secondary flex items-center justify-center py-8 md:py-12 rounded-[20px] w-full">
-          <div className="aspect-[249/540] w-1/2 relative rounded-[20px]">
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        {/* Screenshot Container */}
+        <div className="relative flex items-center justify-center w-full py-12 rounded-lg bg-card-bg">
+          {/* Counters (Absolute Top-Left) */}
+          {(screenCount > 0 || flowCount > 0) && (
+            <div className="absolute top-0 left-0 z-10 flex gap-2">
+              {screenCount > 0 && (
+                <div className="py-1 px-2 bg-tertiary-bg rounded-tl-lg rounded-br-lg">
+                  <span className="text-xs leading-none uppercase text-primary-fg">{screenCount} screens</span>
+                </div>
+              )}
+              {flowCount > 0 && (
+                <div className="py-1 px-2 bg-tertiary-bg rounded-b-lg">
+                  <span className="text-xs leading-none uppercase text-primary-fg">{flowCount} flows</span>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="relative shrink-0 w-[200px] h-[434px]">
             <Image
-              src="/images/sample-img.png"
+              src={validThumbnailUrl}
               alt={name}
               fill
-              className="object-cover object-center rounded-[20px]"
-              sizes="(max-width: 768px) 50vw, 25vw"
+              className="object-cover object-center rounded-lg"
+              sizes="(max-width: 768px) 200px, 200px"
             />
           </div>
         </div>
         
-        {/* Content: Thumbnail + Text */}
-        <div className="flex gap-3 items-start w-full">
-          {/* App Thumbnail */}
-          <div className="relative w-10 h-10 rounded-[4px] shrink-0">
+        {/* Content Container */}
+        <div className="flex items-start w-full py-4 pl-[1px] pr-0 gap-2">
+          {/* App Logo */}
+          <div className="relative shrink-0 w-[44px] h-[44px] rounded-lg border border-border-new">
             <Image
-              src="/images/sample-app-thumbnail.png"
+              src={validLogoUrl}
               alt={name}
               fill
-              className="object-cover object-center rounded-[4px]"
+              className="object-cover object-center rounded-lg"
             />
           </div>
           
           {/* Text Content */}
-          <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <h3 className="text-foreground text-base font-normal leading-[1.5] w-full">
+          <div className="flex-1 min-w-0 flex flex-col gap-2">
+            <h3 className="text-lg leading-none text-primary-fg">
               {name}
             </h3>
-            <p className="text-muted-foreground text-sm font-normal leading-[1.5] tracking-[0.07px] w-full">
+            <p className="text-base leading-none text-secondary-fg">
               {description || ''}
             </p>
           </div>
