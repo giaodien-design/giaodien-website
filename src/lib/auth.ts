@@ -34,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   pages: {
-    signIn: "/login",
+    signIn: "/", // Redirect to home page, user can use login popup from header
     verifyRequest: "/verify-request", // Page shown after magic link sent
     error: "/error", // Error page
   },

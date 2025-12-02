@@ -17,7 +17,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const tCommon = await getTranslations({ locale, namespace: 'common' });
 
   // Fetch apps with search and filter
-  const appsResult = await getApps({ search: q, typeId: type });
+  const appsResult = await getApps({ search: q, categoryId: type });
   const apps = appsResult.success && appsResult.data ? appsResult.data : [];
 
   return (
