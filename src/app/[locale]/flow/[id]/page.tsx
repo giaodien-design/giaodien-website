@@ -6,10 +6,10 @@ import { Footer } from '@/components/Footer';
 import { getFlowById } from '@/lib/actions';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     locale: string;
     id: string;
-  };
+  }>;
 }
 
 export default async function FlowDetailPage({ params }: PageProps) {
@@ -31,13 +31,11 @@ export default async function FlowDetailPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-primary-bg flex flex-col w-full">
       <Header hideTabs={true} />
-      
+
       <div className="flex-1 overflow-y-auto">
         {/* Flow Header Section */}
         <div className="flex items-center px-4 sm:px-6 py-5 border-b border-border-new">
-          <h1 className="text-primary-fg text-base font-normal leading-[1.5] w-full">
-            {flow.name}
-          </h1>
+          <h1 className="text-primary-fg text-base font-normal leading-[1.5] w-full">{flow.name}</h1>
         </div>
 
         {/* Screen Grid */}
@@ -50,10 +48,7 @@ export default async function FlowDetailPage({ params }: PageProps) {
             {/* Desktop: 4 columns */}
             <div className="hidden md:block">
               {Array.from({ length: Math.ceil(screens.length / 4) }).map((_, rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className="grid grid-cols-4 w-full border-b border-border-new"
-                >
+                <div key={rowIndex} className="grid grid-cols-4 w-full border-b border-border-new">
                   {screens.slice(rowIndex * 4, rowIndex * 4 + 4).map((screen, colIndex) => (
                     <div
                       key={screen.id}
@@ -73,14 +68,11 @@ export default async function FlowDetailPage({ params }: PageProps) {
                 </div>
               ))}
             </div>
-            
+
             {/* Mobile: 2 columns */}
             <div className="block md:hidden">
               {Array.from({ length: Math.ceil(screens.length / 2) }).map((_, rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className="grid grid-cols-2 w-full border-b border-border-new"
-                >
+                <div key={rowIndex} className="grid grid-cols-2 w-full border-b border-border-new">
                   {screens.slice(rowIndex * 2, rowIndex * 2 + 2).map((screen, colIndex) => (
                     <div
                       key={screen.id}
@@ -108,4 +100,3 @@ export default async function FlowDetailPage({ params }: PageProps) {
     </div>
   );
 }
-

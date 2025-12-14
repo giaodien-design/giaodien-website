@@ -1,8 +1,8 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import Nodemailer from "next-auth/providers/nodemailer";
-import { prisma } from "@/lib/prisma";
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import NextAuth from 'next-auth';
+import Google from 'next-auth/providers/google';
+import Nodemailer from 'next-auth/providers/nodemailer';
+import { prisma } from '@/lib/prisma';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -15,28 +15,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         port: Number(process.env.EMAIL_SERVER_PORT),
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
       },
-      from: process.env.EMAIL_FROM,
+      from: process.env.EMAIL_FROM
     }),
 
     // Google OAuth provider
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+    })
   ],
 
   // Use JWT strategy for sessions
   session: {
-    strategy: "jwt",
+    strategy: 'jwt'
   },
 
   pages: {
-    signIn: "/", // Redirect to home page, user can use login popup from header
-    verifyRequest: "/verify-request", // Page shown after magic link sent
-    error: "/error", // Error page
+    signIn: '/', // Redirect to home page, user can use login popup from header
+    verifyRequest: '/verify-request', // Page shown after magic link sent
+    error: '/error' // Error page
   },
 
   callbacks: {
@@ -68,9 +68,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       return session;
-    },
+    }
   },
 
   // Enable debug messages in development
-  debug: process.env.NODE_ENV === "development",
+  debug: process.env.NODE_ENV === 'development'
 });

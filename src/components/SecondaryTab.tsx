@@ -1,49 +1,74 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getCategories } from '@/lib/actions';
 
-interface SecondaryTabItemProps {
-  label: string;
-  selected: boolean;
-  onClick: () => void;
-}
-
-function SecondaryTabItem({ label, selected, onClick }: SecondaryTabItemProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center justify-center shrink-0 px-2 py-1 rounded-lg ${
-        selected 
-          ? 'bg-secondary-bg text-primary-fg' 
-          : 'bg-transparent text-tertiary-fg hover:text-primary-fg'
-      }`}
-    >
-      <span className="text-xs leading-none whitespace-pre text-nowrap uppercase">{label}</span>
-    </button>
-  );
-}
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
 
 interface SecondaryTabProps {
-  categories: Array<{
-    id: string;
-    name: string;
-    slug: string;
-  }>;
   selectedCategoryId: string | null;
   onCategoryChange: (categoryId: string | null) => void;
 }
 
-export function SecondaryTab({ categories, selectedCategoryId, onCategoryChange }: SecondaryTabProps) {
+export function SecondaryTab({ selectedCategoryId, onCategoryChange }: SecondaryTabProps) {
   const t = useTranslations('categories');
-  
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch categories from database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoading(true);
+      const result = await getCategories();
+
+      if (result.success && result.data) {
+        setCategories(result.data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchCategories();
+  }, []);
+
   // List of available translations
   const availableTranslations = [
-    'all', 'transportation', 'finance', 'entertainment', 
-    'lifestyle', 'productivity', 'business', 'education',
-    'social', 'health', 'food', 'shopping', 'travel', 
-    'news', 'utilities', 'sports'
+    'all',
+    'transportation',
+    'transport',
+    'finance',
+    'entertainment',
+    'lifestyle',
+    'productivity',
+    'business',
+    'education',
+    'social',
+    'health',
+    'health-fitness',
+    'food',
+    'food-and-drink',
+    'food-drink',
+    'shopping',
+    'travel',
+    'news',
+    'utilities',
+    'sports',
+    'games',
+    'music',
+    'photo-video',
+    'navigation',
+    'weather',
+    'books',
+    'reference',
+    'medical'
   ];
-  
+
   // Helper function to get category label with fallback
   const getCategoryLabel = (category: { name: string; slug: string }): string => {
     // Check if translation exists for this slug
@@ -54,24 +79,39 @@ export function SecondaryTab({ categories, selectedCategoryId, onCategoryChange 
     return category.name;
   };
 
-  return (
-    <div className="w-full overflow-x-auto scrollbar-hide pl-4 pt-2 sm:pl-6 sm:pt-2">
-      <div className="flex gap-2 items-start">
-        <SecondaryTabItem
-          label={t('secondaryTabs.all')}
-          selected={selectedCategoryId === null}
-          onClick={() => onCategoryChange(null)}
-        />
-        {categories.slice(0, 4).map((category) => (
-          <SecondaryTabItem
-            key={category.id}
-            label={getCategoryLabel(category)}
-            selected={selectedCategoryId === category.id}
-            onClick={() => onCategoryChange(category.id)}
-          />
-        ))}
+  // Don't render until categories are loaded
+  if (loading) {
+    return (
+      <div className="w-full overflow-x-auto scrollbar-hide py-2">
+        <div className="h-10" /> {/* Placeholder height to prevent layout shift */}
       </div>
+    );
+  }
+
+  return (
+    <div className="w-full overflow-x-auto scrollbar-hide flex justify-start items-start">
+      <Tabs
+        value={selectedCategoryId || 'all'}
+        onValueChange={(value) => onCategoryChange(value === 'all' ? null : value)}
+      >
+        <TabsList className="w-full bg-transparent rounded-none p-0 gap-1 h-auto items-start flex">
+          <TabsTrigger
+            value="all"
+            className="font-normal data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+          >
+            {t('secondaryTabs.all')}
+          </TabsTrigger>
+          {categories.map((category) => (
+            <TabsTrigger
+              key={category.id}
+              value={category.id}
+              className="font-normal data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            >
+              {getCategoryLabel(category)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   );
 }
-

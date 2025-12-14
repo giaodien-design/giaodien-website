@@ -61,17 +61,10 @@ export function AppGrid({ apps, isLoading = false }: AppGridProps) {
           {/* App Info */}
           <div className="flex gap-3 items-start w-full">
             <div className="border border-neutral-100 rounded-xl w-10 h-10 shrink-0 relative overflow-hidden">
-              <Image
-                src="/images/sample-logo.png"
-                alt={app.name}
-                fill
-                className="object-cover"
-              />
+              <Image src="/images/sample-logo.png" alt={app.name} fill className="object-cover" />
             </div>
             <div className="flex-1 flex flex-col gap-1 items-start min-w-0">
-              <p className="text-base md:text-lg font-medium text-black leading-normal w-full truncate">
-                {app.name}
-              </p>
+              <p className="text-base md:text-lg font-medium text-black leading-normal w-full truncate">{app.name}</p>
               <p className="text-sm font-normal text-black/60 leading-normal w-full truncate">
                 {app.description || t('mobileApp')}
               </p>
@@ -94,6 +87,3 @@ export function AppGrid({ apps, isLoading = false }: AppGridProps) {
     </div>
   );
 }
-
-
-

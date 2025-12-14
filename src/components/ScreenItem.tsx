@@ -16,11 +16,11 @@ export function ScreenItem({ imageUrl, title }: ScreenItemProps) {
   const handleCopy = async () => {
     if (isCopying) return;
     setIsCopying(true);
-    
+
     try {
       const response = await fetch(imageUrl);
       const blob = await response.blob();
-      
+
       await navigator.clipboard.write([
         new ClipboardItem({
           [blob.type]: blob
@@ -36,7 +36,7 @@ export function ScreenItem({ imageUrl, title }: ScreenItemProps) {
   const handleDownload = async () => {
     if (isDownloading) return;
     setIsDownloading(true);
-    
+
     try {
       const response = await fetch(imageUrl);
       const blob = await response.blob();
@@ -78,21 +78,16 @@ export function ScreenItem({ imageUrl, title }: ScreenItemProps) {
           disabled={isCopying}
           className="flex-1 h-[57px] flex items-center justify-center border-r border-gd-cream/[0.12] text-gd-cream text-sm font-normal leading-normal hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
         >
-          <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal">
-            {t('copy')}
-          </p>
+          <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal">{t('copy')}</p>
         </button>
         <button
           onClick={handleDownload}
           disabled={isDownloading}
           className="flex-1 h-[57px] flex items-center justify-center text-gd-cream text-sm font-normal leading-normal hover:bg-gd-cream hover:text-gd-dark transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
         >
-          <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal">
-            {t('download')}
-          </p>
+          <p className="text-gd-cream group-hover:text-gd-dark text-sm font-normal leading-normal">{t('download')}</p>
         </button>
       </div>
     </div>
   );
 }
-
