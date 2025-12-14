@@ -48,6 +48,7 @@
     "secondaryTabs": {
       "all": "Tất cả",
       "transportation": "Di chuyển",
+      "transport": "Di chuyển",
       "finance": "Tài chính",
       "entertainment": "Giải trí",
       "lifestyle": "Đời sống",
@@ -56,12 +57,23 @@
       "education": "Giáo dục",
       "social": "Mạng xã hội",
       "health": "Sức khỏe",
+      "health-fitness": "Sức khỏe",
       "food": "Ẩm thực",
+      "food-and-drink": "Ẩm thực",
+      "food-drink": "Ẩm thực",
       "shopping": "Mua sắm",
       "travel": "Du lịch",
       "news": "Tin tức",
       "utilities": "Tiện ích",
-      "sports": "Thể thao"
+      "sports": "Thể thao",
+      "games": "Trò chơi",
+      "music": "Âm nhạc",
+      "photo-video": "Ảnh & Video",
+      "navigation": "Điều hướng",
+      "weather": "Thời tiết",
+      "books": "Sách",
+      "reference": "Tra cứu",
+      "medical": "Y tế"
     }
   },
   "apps": {
@@ -73,7 +85,9 @@
     "allTypes": "Tất cả",
     "noResults": "Không tìm thấy ứng dụng nào",
     "resultsCount": "{count} ứng dụng",
-    "clearFilters": "Xóa bộ lọc"
+    "clearFilters": "Xóa bộ lọc",
+    "screenCount": "{count} màn hình",
+    "flowCount": "{count} luồng"
   },
   "appDetail": {
     "copy": "Copy",
@@ -189,4 +203,3 @@
     }
   }
 }
-

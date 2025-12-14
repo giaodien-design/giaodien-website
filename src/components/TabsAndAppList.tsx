@@ -6,13 +6,13 @@ import { getApps } from '@/lib/actions';
 import { AppItem } from './AppItem';
 import { SecondaryTab } from './SecondaryTab';
 
-type Category = {
+export type Category = {
   id: string;
   name: string;
   slug: string;
 };
 
-type AppWithCategory = {
+export type AppWithCategory = {
   id: string;
   name: string;
   description: string | null;
@@ -28,12 +28,11 @@ type AppWithCategory = {
 
 interface TabsAndAppListProps {
   initialApps: AppWithCategory[];
-  categories: Category[];
   activeTab: 'app' | 'flow';
   onTabChange: (tab: 'app' | 'flow') => void;
 }
 
-export function TabsAndAppList({ initialApps, categories }: TabsAndAppListProps) {
+export function TabsAndAppList({ initialApps }: TabsAndAppListProps) {
   const tCommon = useTranslations('common');
   const [apps, setApps] = useState<AppWithCategory[]>(initialApps);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -47,7 +46,7 @@ export function TabsAndAppList({ initialApps, categories }: TabsAndAppListProps)
 
     startTransition(async () => {
       const result = await getApps({
-        categoryId: categoryId || undefined,
+        categoryId: categoryId || undefined
       });
 
       clearTimeout(loadingTimer);
@@ -59,37 +58,36 @@ export function TabsAndAppList({ initialApps, categories }: TabsAndAppListProps)
     });
   }, []);
 
-  const handleCategoryChange = useCallback((categoryId: string | null) => {
-    setSelectedCategoryId(categoryId);
-    fetchApps(categoryId);
-  }, [fetchApps]);
+  const handleCategoryChange = useCallback(
+    (categoryId: string | null) => {
+      setSelectedCategoryId(categoryId);
+      fetchApps(categoryId);
+    },
+    [fetchApps]
+  );
 
   return (
-    <>
+    <div className="flex flex-col w-full px-6 py-8 gap-8">
       {/* Secondary Tabs */}
-      <SecondaryTab 
-        categories={categories}
-        selectedCategoryId={selectedCategoryId}
-        onCategoryChange={handleCategoryChange}
-      />
+      <SecondaryTab selectedCategoryId={selectedCategoryId} onCategoryChange={handleCategoryChange} />
 
       {/* App Grid */}
-      <div className="flex flex-col w-full bg-primary-bg p-6 px-4 py-6 sm:p-6">
+      <div className="flex flex-col w-full">
         {/* Loading State */}
         {showLoading && (
           <div className="w-full text-center py-20">
-            <p className="text-secondary-fg">{tCommon('loading')}</p>
+            <p className="text-neutral-400">{tCommon('loading')}</p>
           </div>
         )}
 
         {/* Empty State */}
         {!showLoading && apps.length === 0 && (
           <div className="w-full text-center py-20">
-            <p className="text-secondary-fg text-lg">{tCommon('noResults')}</p>
+            <p className="text-neutral-400 text-lg">{tCommon('noResults')}</p>
           </div>
         )}
 
-        {/* App Grid */}
+        {/* App Grid - 1 col mobile, 2 cols tablet, 4 cols desktop */}
         {!showLoading && apps.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-8">
             {apps.map((app) => (
@@ -107,6 +105,6 @@ export function TabsAndAppList({ initialApps, categories }: TabsAndAppListProps)
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -1,21 +1,23 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { useTranslations, useLocale } from 'next-intl';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface LoginFormProps {
   onSwitchToSignup?: () => void;
 }
 
-export function LoginForm({ onSwitchToSignup }: LoginFormProps = {}) {
+export function LoginForm({ onSwitchToSignup }: LoginFormProps) {
   const t = useTranslations('auth');
   const locale = useLocale();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [message, setMessage] = useState<{
-    type: "error" | "success";
+    type: 'error' | 'success';
     text: string;
   } | null>(null);
 
@@ -23,7 +25,7 @@ export function LoginForm({ onSwitchToSignup }: LoginFormProps = {}) {
     e.preventDefault();
 
     if (!email) {
-      setMessage({ type: "error", text: t('pleaseEnterEmail') });
+      setMessage({ type: 'error', text: t('pleaseEnterEmail') });
       return;
     }
 
@@ -31,22 +33,22 @@ export function LoginForm({ onSwitchToSignup }: LoginFormProps = {}) {
     setMessage(null);
 
     try {
-      const result = await signIn("nodemailer", {
+      const result = await signIn('nodemailer', {
         email,
         redirect: false,
-        callbackUrl: "/",
+        callbackUrl: '/'
       });
 
       if (result?.error) {
-        setMessage({ type: "error", text: t('error') });
+        setMessage({ type: 'error', text: t('error') });
       } else {
         setMessage({
-          type: "success",
-          text: t('checkEmail'),
+          type: 'success',
+          text: t('checkEmail')
         });
       }
     } catch {
-      setMessage({ type: "error", text: t('error') });
+      setMessage({ type: 'error', text: t('error') });
     } finally {
       setIsLoading(false);
     }
@@ -57,13 +59,13 @@ export function LoginForm({ onSwitchToSignup }: LoginFormProps = {}) {
     setMessage(null);
 
     try {
-      await signIn("google", {
-        callbackUrl: "/",
+      await signIn('google', {
+        callbackUrl: '/'
       });
     } catch {
       setMessage({
-        type: "error",
-        text: t('error'),
+        type: 'error',
+        text: t('error')
       });
       setIsGoogleLoading(false);
     }
@@ -71,62 +73,58 @@ export function LoginForm({ onSwitchToSignup }: LoginFormProps = {}) {
 
   return (
     <form onSubmit={handleEmailSignIn} className="flex flex-col gap-4">
-        {/* Email Input */}
-        <input
-          type="email"
-          placeholder={t('emailPlaceholder')}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isLoading || isGoogleLoading}
-          required
-          className="w-full p-3 border border-border-new rounded-lg bg-primary-bg text-xs leading-none text-primary-fg placeholder:text-secondary-fg outline-none focus:border-primary-fg disabled:opacity-50"
-        />
+      {/* Email Input */}
+      <Input
+        type="email"
+        placeholder={t('emailPlaceholder')}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={isLoading || isGoogleLoading}
+        required
+      />
 
-        {/* Error/Success Message */}
-        {message && (
-          <div className={`p-3 rounded-lg text-sm leading-relaxed text-center ${
-            message.type === 'error' 
-              ? 'bg-red-50 text-red-600 border border-red-200' 
-              : 'bg-green-50 text-green-600 border border-green-200'
-          }`}>
-            {message.text}
-          </div>
-        )}
-
-        {/* Login Button */}
-        <button
-          type="submit"
-          disabled={isLoading || isGoogleLoading}
-          className="w-full flex items-center justify-center p-3 rounded-lg bg-reverse-bg text-reverse-fg text-xs leading-none uppercase font-normal border-none cursor-pointer transition-colors hover:bg-reverse-hover-bg disabled:opacity-50 disabled:cursor-not-allowed"
+      {/* Error/Success Message */}
+      {message && (
+        <div
+          className={`rounded-md border p-3 text-sm text-center ${
+            message.type === 'error'
+              ? 'border-red-200 bg-red-50 text-red-600'
+              : 'border-green-200 bg-green-50 text-green-600'
+          }`}
         >
-          {isLoading ? t('sending') : t('login')}
-        </button>
+          {message.text}
+        </div>
+      )}
 
-        {/* Google Button */}
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          disabled={isLoading || isGoogleLoading}
-          className="w-full flex items-center justify-center p-3 rounded-lg bg-secondary-bg text-primary-fg text-xs leading-none uppercase font-normal border border-border-new cursor-pointer transition-colors hover:bg-hover-bg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isGoogleLoading ? t('loggingIn') : t('continueWithGoogle')}
-        </button>
+      {/* Login Button */}
+      <Button type="submit" disabled={isLoading || isGoogleLoading} className="w-full">
+        {isLoading ? t('sending') : t('login')}
+      </Button>
 
-        {/* Terms Text */}
-        <p className="text-sm leading-relaxed text-secondary-fg text-center m-0">
-          {t('terms')} <span className="text-primary-fg underline cursor-pointer">{t('termsOfService')}</span> {t('and')} <span className="text-primary-fg underline cursor-pointer">{t('privacyPolicy')}</span>{locale === 'vi' ? ` ${t('ofUs')}` : '.'}
-        </p>
+      {/* Google Button */}
+      <Button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={isLoading || isGoogleLoading}
+        variant="outline"
+        className="w-full"
+      >
+        {isGoogleLoading ? t('loggingIn') : t('continueWithGoogle')}
+      </Button>
 
-        {/* Signup Link */}
-        {onSwitchToSignup ? (
-          <button
-            type="button"
-            onClick={onSwitchToSignup}
-            className="self-center p-2 rounded-lg bg-secondary-bg text-primary-fg text-xs leading-none uppercase font-normal border-none cursor-pointer transition-colors hover:bg-hover-bg"
-          >
-            {t('dontHaveAccount')}
-          </button>
-        ) : null}
-      </form>
+      {/* Terms Text */}
+      <p className="text-sm text-center text-neutral-500 m-0">
+        {t('terms')} <span className="text-neutral-950 underline cursor-pointer">{t('termsOfService')}</span> {t('and')}{' '}
+        <span className="text-neutral-950 underline cursor-pointer">{t('privacyPolicy')}</span>
+        {locale === 'vi' ? ` ${t('ofUs')}` : '.'}
+      </p>
+
+      {/* Signup Link */}
+      {onSwitchToSignup ? (
+        <Button type="button" onClick={onSwitchToSignup} variant="ghost" className="self-center">
+          {t('dontHaveAccount')}
+        </Button>
+      ) : null}
+    </form>
   );
 }

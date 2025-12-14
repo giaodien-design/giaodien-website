@@ -48,6 +48,7 @@
     "secondaryTabs": {
       "all": "All",
       "transportation": "Transportation",
+      "transport": "Transport",
       "finance": "Finance",
       "entertainment": "Entertainment",
       "lifestyle": "Lifestyle",
@@ -56,12 +57,23 @@
       "education": "Education",
       "social": "Social",
       "health": "Health & Fitness",
+      "health-fitness": "Health & Fitness",
       "food": "Food & Drink",
+      "food-and-drink": "Food & Drink",
+      "food-drink": "Food & Drink",
       "shopping": "Shopping",
       "travel": "Travel",
       "news": "News",
       "utilities": "Utilities",
-      "sports": "Sports"
+      "sports": "Sports",
+      "games": "Games",
+      "music": "Music",
+      "photo-video": "Photo & Video",
+      "navigation": "Navigation",
+      "weather": "Weather",
+      "books": "Books",
+      "reference": "Reference",
+      "medical": "Medical"
     }
   },
   "apps": {
@@ -73,7 +85,9 @@
     "allTypes": "All",
     "noResults": "No apps found",
     "resultsCount": "{{count}} apps",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "screenCount": "{count} screens",
+    "flowCount": "{count} flows"
   },
   "appDetail": {
     "copy": "Copy",
@@ -189,4 +203,3 @@
     }
   }
 }
-

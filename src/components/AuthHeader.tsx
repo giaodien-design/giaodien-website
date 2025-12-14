@@ -24,12 +24,7 @@ export function AuthHeader() {
         {/* Logo Container - grows to push button to bottom */}
         <div className="flex-1 border-b border-gd-cream/[0.12] flex items-center justify-center px-5">
           <Link href={`/${locale}`} className="relative w-[70px] h-[100px]">
-            <Image
-              src="/images/logo-2.svg"
-              alt={tCommon('logoAlt')}
-              fill
-              className="object-contain"
-            />
+            <Image src="/images/logo-2.svg" alt={tCommon('logoAlt')} fill className="object-contain" />
           </Link>
         </div>
 
@@ -49,12 +44,7 @@ export function AuthHeader() {
         {/* Logo Section */}
         <div className="flex-1 border-r border-gd-cream/[0.12] h-20 flex items-center justify-center px-5">
           <Link href={`/${locale}`} className="relative w-[35px] h-[50px]">
-            <Image
-              src="/images/logo-2.svg"
-              alt={tCommon('logoAlt')}
-              fill
-              className="object-contain"
-            />
+            <Image src="/images/logo-2.svg" alt={tCommon('logoAlt')} fill className="object-contain" />
           </Link>
         </div>
 
@@ -71,4 +61,3 @@ export function AuthHeader() {
     </>
   );
 }
-

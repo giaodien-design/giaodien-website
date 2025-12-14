@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Logo } from './Logo';
@@ -15,17 +15,17 @@ interface HeaderProps {
   onLoginOpenChange?: (isOpen: boolean) => void;
 }
 
-export function Header({ activeTab = 'app', onTabChange, hideTabs = false, onLoginOpenChange }: HeaderProps = {}) {
+export function Header({ activeTab = 'app', onTabChange, hideTabs = false, onLoginOpenChange }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Sync login state with parent
   useEffect(() => {
     onLoginOpenChange?.(isLoginOpen);
   }, [isLoginOpen, onLoginOpenChange]);
-  
+
   // Auto-focus search input when drawer opens
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
@@ -51,7 +51,7 @@ export function Header({ activeTab = 'app', onTabChange, hideTabs = false, onLog
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     }
-    
+
     return () => {
       if (!isSearchOpen) {
         document.body.style.position = '';
@@ -61,50 +61,32 @@ export function Header({ activeTab = 'app', onTabChange, hideTabs = false, onLog
       }
     };
   }, [isSearchOpen]);
-  
+
   return (
     <>
-      {/* Desktop Header */}
-      <header className="hidden sm:flex w-full max-w-none justify-between items-start pl-6">
-        <div className="flex items-start gap-4">
+      {/* Header - Desktop: flex row with justify-between, Mobile: simplified */}
+      <header className="flex w-full items-center justify-between px-6 py-4">
+        {/* Left Item: Logo - flex-1 to allow center positioning */}
+        <div className="flex flex-1 items-center">
           <Logo size="large" disabled={isSearchOpen} />
-          
-          {!hideTabs && (
-            <div className="px-1 pb-1 pt-0 bg-tertiary-bg rounded-none rounded-b-lg">
-              <PrimaryTab 
-                activeTab={activeTab} 
-                onTabChange={onTabChange || (() => {})}
-                direction="horizontal"
-              />
-            </div>
-          )}
         </div>
 
-        <ButtonInHeader 
-          direction="horizontal" 
-          onSearchOpenChange={setIsSearchOpen}
-          onLoginOpenChange={setIsLoginOpen}
-        />
+        {/* Center Item: Primary Tabs - Desktop only, centered */}
+        {!hideTabs && (
+          <div className="hidden sm:flex items-center justify-center">
+            <PrimaryTab activeTab={activeTab} onTabChange={onTabChange || (() => {})} direction="horizontal" />
+          </div>
+        )}
+
+        {/* Right Item: Button Group - flex-1 with justify-end */}
+        <div className="flex flex-1 items-center justify-end">
+          <ButtonInHeader onSearchOpenChange={setIsSearchOpen} onLoginOpenChange={setIsLoginOpen} />
+        </div>
       </header>
 
-      {/* Mobile Header */}
-      <header className="flex sm:hidden w-full max-w-none justify-between items-start pl-4 pb-4">
-        <Logo size="small" disabled={isSearchOpen} />
-        
-        <ButtonInHeader 
-          direction="horizontal" 
-          onSearchOpenChange={setIsSearchOpen}
-          onLoginOpenChange={setIsLoginOpen}
-        />
-      </header>
-      
       {/* Search Drawer - Rendered at Header level so it's always available */}
-      <SearchDrawer 
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        searchInputRef={searchInputRef}
-      />
-      
+      <SearchDrawer isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} searchInputRef={searchInputRef} />
+
       {/* Auth Popups */}
       <LoginPopup
         isOpen={isLoginOpen}

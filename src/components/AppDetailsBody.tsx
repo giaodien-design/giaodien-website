@@ -1,8 +1,11 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useMemo, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface AppDetailsBodyProps {
   app: {
@@ -28,22 +31,17 @@ interface AppDetailsBodyProps {
   };
 }
 
-const viewTabs = [
-  { id: "screens", label: "Screens" },
-  { id: "flows", label: "Flows" },
-];
-
 export function AppDetailsBody({ app }: AppDetailsBodyProps) {
-  const [activeView, setActiveView] = useState<"screens" | "flows">("screens");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [activeView, setActiveView] = useState<'screens' | 'flows'>('screens');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Helper function to validate image URLs
   const getValidImageUrl = (url: string | null | undefined, fallback: string): string => {
     if (!url) return fallback;
-    
+
     // If it's a local path (starts with /), use it directly
     if (url.startsWith('/')) return url;
-    
+
     // If it's an external URL, check if it's from a configured domain
     try {
       const urlObj = new URL(url);
@@ -65,8 +63,8 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
         id: screen.id || `screen-${index + 1}`,
         title: screen.title || `Screen ${index + 1}`,
         description: screen.description,
-        imageUrl: getValidImageUrl(screen.imageUrl, "/images/sample-img.png"),
-        screenType: screen.screenType || "Ungrouped",
+        imageUrl: getValidImageUrl(screen.imageUrl, '/images/sample-img.png'),
+        screenType: screen.screenType || 'Ungrouped'
       }));
     }
     return [];
@@ -79,7 +77,7 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
       return formattedScreens;
     }
     return formattedScreens.filter((screen) => {
-      const haystack = `${screen.title} ${screen.screenType ?? ""}`.toLowerCase();
+      const haystack = `${screen.title} ${screen.screenType ?? ''}`.toLowerCase();
       return haystack.includes(normalizedSearch);
     });
   }, [formattedScreens, normalizedSearch]);
@@ -89,18 +87,15 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
       return [];
     }
 
-    const groupsMap = new Map<
-      string,
-      { id: string; name: string; screens: typeof formattedScreens }
-    >();
+    const groupsMap = new Map<string, { id: string; name: string; screens: typeof formattedScreens }>();
 
     formattedScreens.forEach((screen) => {
-      const key = screen.screenType || "Ungrouped";
+      const key = screen.screenType || 'Ungrouped';
       if (!groupsMap.has(key)) {
         groupsMap.set(key, {
-          id: key.toLowerCase().replace(/\s+/g, "-"),
+          id: key.toLowerCase().replace(/\s+/g, '-'),
           name: key,
-          screens: [],
+          screens: []
         });
       }
       groupsMap.get(key)!.screens.push(screen);
@@ -118,10 +113,8 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
       .map((group) => ({
         ...group,
         screens: group.screens.filter((screen) =>
-          `${screen.title} ${screen.screenType ?? ""}`
-            .toLowerCase()
-            .includes(normalizedSearch)
-        ),
+          `${screen.title} ${screen.screenType ?? ''}`.toLowerCase().includes(normalizedSearch)
+        )
       }))
       .filter((group) => group.screens.length);
   }, [computedFlowGroups, normalizedSearch]);
@@ -134,23 +127,23 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
 
   const infoItems = [
     {
-      label: "Platform",
-      value: app.platform ? formatPlatform(app.platform) : "Not specified",
+      label: 'Platform',
+      value: app.platform ? formatPlatform(app.platform) : 'Not specified'
     },
     {
-      label: "Category",
-      value: app.category?.name || "Uncategorized",
+      label: 'Category',
+      value: app.category?.name || 'Uncategorized'
     },
     {
-      label: "Last updated",
+      label: 'Last updated',
       value: app.updatedAt
-        ? new Intl.DateTimeFormat("en", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
+        ? new Intl.DateTimeFormat('en', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
           }).format(new Date(app.updatedAt))
-        : "—",
-    },
+        : '—'
+    }
   ];
 
   return (
@@ -161,7 +154,7 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
             <div className="relative w-[80px] h-[80px] rounded-[16px] overflow-hidden bg-secondary-bg flex-shrink-0">
               <Image
-                src={getValidImageUrl(app.icon, "/images/sample-app-thumbnail.png")}
+                src={getValidImageUrl(app.icon, '/images/sample-app-thumbnail.png')}
                 alt={app.name}
                 fill
                 className="object-cover"
@@ -174,7 +167,7 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
                   {app.name}
                 </h1>
                 <p className="text-[16px] leading-[1.4] text-secondary-fg">
-                  {app.description || "No description provided"}
+                  {app.description || 'No description provided'}
                 </p>
               </div>
               {app.category ? (
@@ -187,14 +180,11 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
             </div>
             {websiteHref ? (
               <div className="flex md:flex-col items-start justify-center md:justify-start">
-                <Link
-                  href={websiteHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="large-button large-button-secondary whitespace-nowrap"
-                >
-                  Visit website
-                </Link>
+                <Button asChild variant="outline">
+                  <Link href={websiteHref} target="_blank" rel="noopener noreferrer">
+                    Visit website
+                  </Link>
+                </Button>
               </div>
             ) : null}
           </div>
@@ -204,31 +194,22 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
         <section className="border-b border-border-new py-8 px-5 md:px-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {infoItems.map((item) => (
-              <div
-                key={item.label}
-                className="flex flex-col gap-2"
-              >
-                <p className="text-[12px] leading-[1.2] tracking-[0.6px] text-secondary-fg">
-                  {item.label}
-                </p>
-                <p className="text-[16px] leading-[1.2] font-normal text-primary-fg break-words">
-                  {item.value}
-                </p>
+              <div key={item.label} className="flex flex-col gap-2">
+                <p className="text-[12px] leading-[1.2] tracking-[0.6px] text-secondary-fg">{item.label}</p>
+                <p className="text-[16px] leading-[1.2] font-normal text-primary-fg break-words">{item.value}</p>
               </div>
             ))}
           </div>
           {websiteHref ? (
             <div className="mt-6 flex flex-col gap-2">
-              <p className="text-[12px] leading-[1.2] tracking-[0.6px] text-secondary-fg">
-                Website
-              </p>
+              <p className="text-[12px] leading-[1.2] tracking-[0.6px] text-secondary-fg">Website</p>
               <a
                 href={websiteHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[16px] leading-[1.2] font-normal text-primary-fg underline underline-offset-4 break-all"
               >
-                {websiteHref.replace(/^https?:\/\//, "")}
+                {websiteHref.replace(/^https?:\/\//, '')}
               </a>
             </div>
           ) : null}
@@ -236,49 +217,33 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
 
         {/* Utilities */}
         <section className="border-b border-border-new flex flex-col gap-4 py-6 px-5 md:px-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-2 flex-wrap">
-            {viewTabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveView(tab.id as "screens" | "flows")}
-                className={`primary-tab-item ${
-                  activeView === tab.id
-                    ? "primary-tab-item-selected"
-                    : "primary-tab-item-unselected"
-                }`}
-              >
-                <span className="leading-none whitespace-nowrap">{tab.label}</span>
-              </button>
-            ))}
-          </div>
+          <Tabs value={activeView} onValueChange={(value) => setActiveView(value as 'screens' | 'flows')}>
+            <TabsList>
+              <TabsTrigger value="screens">Screens</TabsTrigger>
+              <TabsTrigger value="flows">Flows</TabsTrigger>
+            </TabsList>
+          </Tabs>
           <div className="flex items-center gap-4 w-full lg:w-auto">
-            <div className="w-full lg:w-[320px]">
-              <div className="flex items-center h-[48px] rounded-[9999px] border border-border-new px-4 bg-primary-bg gap-2">
-                <SearchIcon />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder={activeView === 'screens' ? 'Search screens' : 'Search flows'}
-                  className="w-full bg-transparent text-[14px] font-normal text-primary-fg placeholder:text-secondary-fg outline-none"
-                />
-              </div>
+            <div className="relative w-full lg:w-[320px]">
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-secondary-foreground" />
+              <Input
+                type="text"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder={activeView === 'screens' ? 'Search screens' : 'Search flows'}
+                className="pl-9"
+              />
             </div>
           </div>
         </section>
 
         {/* View content */}
         <section className="py-10 px-5 md:px-6 flex flex-col gap-8">
-          {activeView === "screens" ? (
+          {activeView === 'screens' ? (
             filteredScreens.length ? (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
                 {filteredScreens.map((screen) => (
-                  <ScreenCard
-                    key={screen.id}
-                    imageUrl={screen.imageUrl}
-                    title={screen.title}
-                  />
+                  <ScreenCard key={screen.id} imageUrl={screen.imageUrl} title={screen.title} />
                 ))}
               </div>
             ) : (
@@ -289,9 +254,7 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
               {filteredFlowGroups.map((group) => (
                 <div key={group.id} className="flex flex-col gap-6">
                   <div className="flex flex-col gap-2 pb-4 border-b border-border-new">
-                    <h3 className="text-[24px] leading-[1.1] font-medium text-primary-fg">
-                      {group.name}
-                    </h3>
+                    <h3 className="text-[24px] leading-[1.1] font-medium text-primary-fg">{group.name}</h3>
                     <p className="text-[14px] leading-[1.2] text-secondary-fg">
                       {group.screens.length} screen{group.screens.length !== 1 ? 's' : ''}
                     </p>
@@ -299,11 +262,7 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
                   {group.screens.length ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
                       {group.screens.map((screen) => (
-                        <ScreenCard
-                          key={`${group.id}-${screen.id}`}
-                          imageUrl={screen.imageUrl}
-                          title={screen.title}
-                        />
+                        <ScreenCard key={`${group.id}-${screen.id}`} imageUrl={screen.imageUrl} title={screen.title} />
                       ))}
                     </div>
                   ) : null}
@@ -325,7 +284,7 @@ function ScreenCard({ imageUrl, title }: { imageUrl: string; title: string }) {
       <div className="relative w-full aspect-[276/550] rounded-[24px] overflow-hidden border border-border-new bg-secondary-bg">
         <Image
           src={imageUrl}
-          alt={title || "App screen preview"}
+          alt={title || 'App screen preview'}
           fill
           className="object-cover"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -345,11 +304,11 @@ function EmptyState({ label }: { label: string }) {
 
 function formatPlatform(platform: string) {
   const normalized = platform.toLowerCase();
-  if (normalized === "ios") return "iOS";
+  if (normalized === 'ios') return 'iOS';
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 }
 
-function SearchIcon() {
+function SearchIcon({ className }: { className?: string }) {
   return (
     <svg
       width="16"
@@ -357,7 +316,7 @@ function SearchIcon() {
       viewBox="0 0 16 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="text-secondary-fg"
+      className={className}
     >
       <path
         d="M11.3333 11.3333L14 14"
@@ -376,4 +335,3 @@ function SearchIcon() {
     </svg>
   );
 }
-

@@ -1,4 +1,4 @@
-import { GalleryVerticalEnd } from "lucide-react";
+import { GalleryVerticalEnd } from 'lucide-react';
 
 export default function VerifyRequestPage() {
   return (
@@ -14,10 +14,7 @@ export default function VerifyRequestPage() {
 
           <div className="space-y-4 text-secondary-fg">
             <p>Một link đăng nhập đã được gửi đến địa chỉ email của bạn.</p>
-            <p>
-              Vui lòng kiểm tra hộp thư đến (hoặc thư mục spam) và nhấp vào link
-              để đăng nhập.
-            </p>
+            <p>Vui lòng kiểm tra hộp thư đến (hoặc thư mục spam) và nhấp vào link để đăng nhập.</p>
           </div>
 
           <div className="pt-4">
@@ -30,8 +27,3 @@ export default function VerifyRequestPage() {
     </div>
   );
 }
-
-
-
-
-
