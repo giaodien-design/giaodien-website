@@ -106,7 +106,10 @@
     "error": "An error occurred",
     "noResults": "No results",
     "noData": "No data",
-    "logoAlt": "gdd logo"
+    "logoAlt": "gdd logo",
+    "noScreensFound": "No screens found",
+    "noFlowsFound": "No flows found",
+    "tryAdjustingFilters": "Try adjusting your filters to see more results"
   },
   "languages": {
     "vietnamese": "Vietnamese",

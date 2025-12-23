@@ -106,7 +106,10 @@
     "error": "Đã xảy ra lỗi",
     "noResults": "Không có kết quả",
     "noData": "Không có dữ liệu",
-    "logoAlt": "logo gdd"
+    "logoAlt": "logo gdd",
+    "noScreensFound": "Không tìm thấy màn hình nào",
+    "noFlowsFound": "Không tìm thấy flow nào",
+    "tryAdjustingFilters": "Thử điều chỉnh bộ lọc để xem thêm kết quả"
   },
   "languages": {
     "vietnamese": "Tiếng Việt",
