@@ -3,210 +3,154 @@ import { PrismaClient } from '@/generated/prisma';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create types first
-  console.log('Creating types...');
+  // ============================================
+  // Seed ScreenTypes
+  // ============================================
+  const screenTypes = [
+    { name: 'Login', slug: 'login' },
+    { name: 'Register', slug: 'register' },
+    { name: 'OTP', slug: 'otp' },
+    { name: 'Home', slug: 'home' },
+    { name: 'Profile', slug: 'profile' },
+  ];
 
-  const transportation = await prisma.type.upsert({
-    where: { slug: 'transportation' },
-    update: {},
-    create: {
-      name: 'Di chuyển',
-      slug: 'transportation',
-      description: 'Apps related to transportation and mobility'
-    }
-  });
+  console.log('Seeding ScreenTypes...');
 
-  const finance = await prisma.type.upsert({
-    where: { slug: 'finance' },
-    update: {},
-    create: {
-      name: 'Tài chính',
-      slug: 'finance',
-      description: 'Financial and banking apps'
-    }
-  });
+  for (const screenType of screenTypes) {
+    await prisma.screenType.upsert({
+      where: { slug: screenType.slug },
+      update: { name: screenType.name },
+      create: screenType,
+    });
+    console.log(`✓ Upserted ScreenType: ${screenType.name}`);
+  }
 
-  const entertainment = await prisma.type.upsert({
-    where: { slug: 'entertainment' },
-    update: {},
-    create: {
-      name: 'Giải trí',
-      slug: 'entertainment',
-      description: 'Entertainment and media apps'
-    }
-  });
+  console.log('\n✅ Finished seeding ScreenTypes!\n');
 
-  const lifestyle = await prisma.type.upsert({
-    where: { slug: 'lifestyle' },
-    update: {},
-    create: {
-      name: 'Đời sống',
-      slug: 'lifestyle',
-      description: 'Lifestyle and daily living apps'
-    }
-  });
+  // ============================================
+  // Seed UIElements
+  // ============================================
+  const uiElements = [
+    { name: 'Button', slug: 'button' },
+    { name: 'Input', slug: 'input' },
+    { name: 'Modal', slug: 'modal' },
+    { name: 'Tab Bar', slug: 'tab-bar' },
+    { name: 'Toggle', slug: 'toggle' },
+  ];
 
-  const productivity = await prisma.type.upsert({
-    where: { slug: 'productivity' },
-    update: {},
-    create: {
-      name: 'Hiệu suất',
-      slug: 'productivity',
-      description: 'Productivity and work apps'
-    }
-  });
+  console.log('Seeding UIElements...');
 
-  console.log('Types created successfully');
+  for (const uiElement of uiElements) {
+    await prisma.uIElement.upsert({
+      where: { slug: uiElement.slug },
+      update: { name: uiElement.name },
+      create: uiElement,
+    });
+    console.log(`✓ Upserted UIElement: ${uiElement.name}`);
+  }
 
-  // Create sample apps with types
-  const instagram = await prisma.app.upsert({
-    where: { slug: 'instagram' },
-    update: {
-      // Update existing Instagram with types if it doesn't have them
-      appTypes: {
-        deleteMany: {}, // Clear existing
-        create: [{ typeId: entertainment.id }, { typeId: lifestyle.id }]
-      }
+  console.log('\n✅ Finished seeding UIElements!\n');
+
+  // ============================================
+  // Seed User Flows
+  // ============================================
+  // Standard User Flows to seed
+  const flows = [
+    {
+      name: 'Onboarding',
+      slug: 'onboarding',
+      sortOrder: 10,
+      description: 'User onboarding and first-time experience flows'
     },
-    create: {
-      name: 'Instagram',
-      description: 'Photo and video sharing social networking service',
-      slug: 'instagram',
-      category: 'Social',
-      platform: 'IOS',
-      brandColor: '#E4405F',
-      screens: {
-        create: [
-          {
-            title: 'Feed Screen',
-            imageUrl: 'https://example.com/instagram-feed.png',
-            screenType: 'Home',
-            tags: ['feed', 'infinite-scroll', 'stories']
-          },
-          {
-            title: 'Profile Screen',
-            imageUrl: 'https://example.com/instagram-profile.png',
-            screenType: 'Profile',
-            tags: ['profile', 'grid', 'bio']
-          }
-        ]
-      },
-      appTypes: {
-        create: [{ typeId: entertainment.id }, { typeId: lifestyle.id }]
-      }
-    }
-  });
-
-  // Create more sample apps for testing
-  const grab = await prisma.app.upsert({
-    where: { slug: 'grab' },
-    update: {
-      appTypes: {
-        deleteMany: {},
-        create: [{ typeId: transportation.id }]
-      }
+    {
+      name: 'Authentication',
+      slug: 'authentication',
+      sortOrder: 20,
+      description: 'Login, signup, and authentication screens'
     },
-    create: {
-      name: 'Grab',
-      description: 'Ride-hailing and delivery service',
-      slug: 'grab',
-      category: 'Transportation',
-      platform: 'IOS',
-      brandColor: '#00B14F',
-      appTypes: {
-        create: [{ typeId: transportation.id }]
-      }
-    }
-  });
-
-  const momo = await prisma.app.upsert({
-    where: { slug: 'momo' },
-    update: {
-      appTypes: {
-        deleteMany: {},
-        create: [{ typeId: finance.id }]
-      }
+    {
+      name: 'OTP Verification',
+      slug: 'otp',
+      sortOrder: 25,
+      description: 'OTP and verification code entry screens'
     },
-    create: {
-      name: 'MoMo',
-      description: 'Mobile payment and digital wallet',
-      slug: 'momo',
-      category: 'Finance',
-      platform: 'IOS',
-      brandColor: '#D82D8B',
-      appTypes: {
-        create: [{ typeId: finance.id }]
-      }
-    }
-  });
-
-  const shopee = await prisma.app.upsert({
-    where: { slug: 'shopee' },
-    update: {
-      appTypes: {
-        deleteMany: {},
-        create: [{ typeId: lifestyle.id }, { typeId: entertainment.id }]
-      }
+    {
+      name: 'Home',
+      slug: 'home',
+      sortOrder: 30,
+      description: 'Main home screen and dashboard views'
     },
-    create: {
-      name: 'Shopee',
-      description: 'Online shopping platform',
-      slug: 'shopee',
-      category: 'E-commerce',
-      platform: 'IOS',
-      brandColor: '#EE4D2D',
-      appTypes: {
-        create: [{ typeId: lifestyle.id }, { typeId: entertainment.id }]
-      }
-    }
-  });
-
-  const notion = await prisma.app.upsert({
-    where: { slug: 'notion' },
-    update: {
-      appTypes: {
-        deleteMany: {},
-        create: [{ typeId: productivity.id }]
-      }
+    {
+      name: 'Search',
+      slug: 'search',
+      sortOrder: 40,
+      description: 'Search functionality and results screens'
     },
-    create: {
-      name: 'Notion',
-      description: 'All-in-one workspace for notes and collaboration',
-      slug: 'notion',
-      category: 'Productivity',
-      platform: 'IOS',
-      brandColor: '#000000',
-      appTypes: {
-        create: [{ typeId: productivity.id }]
-      }
-    }
-  });
-
-  const zalo = await prisma.app.upsert({
-    where: { slug: 'zalo' },
-    update: {
-      appTypes: {
-        deleteMany: {},
-        create: [{ typeId: lifestyle.id }, { typeId: entertainment.id }]
-      }
+    {
+      name: 'Order Tracking',
+      slug: 'tracking',
+      sortOrder: 70,
+      description: 'Order status and tracking screens'
     },
-    create: {
-      name: 'Zalo',
-      description: 'Messaging and social networking app',
-      slug: 'zalo',
-      category: 'Social',
-      platform: 'IOS',
-      brandColor: '#0068FF',
-      appTypes: {
-        create: [{ typeId: lifestyle.id }, { typeId: entertainment.id }]
-      }
+    {
+      name: 'Payment',
+      slug: 'qr-scan',
+      sortOrder: 80,
+      description: 'Payment and QR code scanning screens'
+    },
+    {
+      name: 'eKYC & Verification',
+      slug: 'ekyc',
+      sortOrder: 90,
+      description: 'Electronic Know Your Customer and identity verification'
+    },
+    {
+      name: 'Loyalty',
+      slug: 'loyalty',
+      sortOrder: 100,
+      description: 'Loyalty programs and rewards screens'
+    },
+    {
+      name: 'Profile',
+      slug: 'profile',
+      sortOrder: 110,
+      description: 'User profile and settings screens'
     }
-  });
+  ];
 
-  console.log({
-    created: { instagram, grab, momo, shopee, notion, zalo },
-    types: { transportation, finance, entertainment, lifestyle, productivity }
-  });
+  console.log('Seeding standard User Flows...');
+
+  // Loop through flows and upsert them
+  for (const flow of flows) {
+    // Check if flow exists by name
+    const existingFlow = await prisma.flow.findFirst({
+      where: { name: flow.name }
+    });
+
+    if (existingFlow) {
+      // Update existing flow
+      await prisma.flow.update({
+        where: { id: existingFlow.id },
+        data: {
+          description: flow.description,
+          sortOrder: flow.sortOrder
+        }
+      });
+      console.log(`✓ Updated flow: ${flow.name}`);
+    } else {
+      // Create new flow
+      await prisma.flow.create({
+        data: {
+          name: flow.name,
+          description: flow.description,
+          sortOrder: flow.sortOrder
+        }
+      });
+      console.log(`✓ Created flow: ${flow.name}`);
+    }
+  }
+
+  console.log('\n✅ Finished seeding User Flows!');
 }
 
 main()

@@ -31,9 +31,11 @@ model App {
   
   // Relations
   screens       Screen[]
+  versions      AppVersion[]
   
   // Metadata
   isPublished   Boolean   @default(true)
+  isRecommended Boolean   @default(false) // For search empty state suggestions
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -42,6 +44,7 @@ model App {
   @@index([platform])
   @@index([slug])
   @@index([isPublished, createdAt(sort: Desc)])
+  @@index([isRecommended])
 }
 
 model Category {
@@ -67,8 +70,11 @@ model Flow {
   screens     Screen[]
   
   // Metadata
+  isRecommended Boolean  @default(false) // For search empty state suggestions
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([isRecommended])
 }
 
 model Screen {
@@ -76,15 +82,25 @@ model Screen {
   title       String
   description String?
   imageUrl    String   // URL ảnh screenshot
+  order       Int      @default(0)  // Order/position within a flow
   
   // Relations
   appId       String
   app         App      @relation(fields: [appId], references: [id], onDelete: Cascade)
   flowId      String?
   flow        Flow?    @relation(fields: [flowId], references: [id], onDelete: SetNull)
+  appVersionId String?
+  appVersion  AppVersion? @relation(fields: [appVersionId], references: [id], onDelete: SetNull)
+  
+  // Screen Type relation (optional)
+  screenTypeId String?
+  screenType   ScreenType? @relation(fields: [screenTypeId], references: [id], onDelete: SetNull)
+  
+  // UI Elements relation (many-to-many)
+  uiElements   UIElement[]
   
   // Categorization
-  screenType  String?  // Login, Home, Profile, Settings, Onboarding, Checkout, etc.
+  legacyScreenType String?  // Legacy field (deprecated, kept for data migration)
   tags        String[] // modal, form, list, card, navigation, animation, etc.
   
   // Engagement
@@ -98,9 +114,54 @@ model Screen {
 
   @@index([appId])
   @@index([flowId])
-  @@index([screenType])
+  @@index([appVersionId])
+  @@index([screenTypeId])
+  @@index([legacyScreenType])
   @@index([viewCount])
   @@index([likeCount])
+  @@index([order])
+}
+
+model ScreenType {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  isRecommended Boolean @default(false) // For search empty state suggestions
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  screens   Screen[]
+  
+  @@index([slug])
+  @@index([isRecommended])
+}
+
+model UIElement {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  isRecommended Boolean @default(false) // For search empty state suggestions
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  screens   Screen[]
+  
+  @@index([slug])
+  @@index([isRecommended])
+}
+
+model AppVersion {
+  id        String   @id @default(uuid())
+  name      String   // Version name, e.g., "2.0", "2025 Update"
+  appId     String
+  app       App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+  screens   Screen[]
+  createdAt DateTime @default(now())
+  
+  @@index([appId])
+  @@index([createdAt])
 }
 
 enum Platform {
