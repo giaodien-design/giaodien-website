@@ -1,10 +1,7 @@
 'use client';
 
-import { useState, useCallback, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
-import { getApps } from '@/lib/actions';
 import { AppItem } from './AppItem';
-import { SecondaryTab } from './SecondaryTab';
 
 export type Category = {
   id: string;
@@ -28,67 +25,27 @@ export type AppWithCategory = {
 
 interface TabsAndAppListProps {
   initialApps: AppWithCategory[];
-  activeTab: 'app' | 'flow';
-  onTabChange: (tab: 'app' | 'flow') => void;
 }
 
 export function TabsAndAppList({ initialApps }: TabsAndAppListProps) {
   const tCommon = useTranslations('common');
-  const [apps, setApps] = useState<AppWithCategory[]>(initialApps);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [, startTransition] = useTransition();
-  const [showLoading, setShowLoading] = useState(false);
 
-  const fetchApps = useCallback(async (categoryId: string | null) => {
-    const loadingTimer = setTimeout(() => {
-      setShowLoading(true);
-    }, 300);
-
-    startTransition(async () => {
-      const result = await getApps({
-        categoryId: categoryId || undefined
-      });
-
-      clearTimeout(loadingTimer);
-      setShowLoading(false);
-
-      if (result.success && result.data) {
-        setApps(result.data);
-      }
-    });
-  }, []);
-
-  const handleCategoryChange = useCallback(
-    (categoryId: string | null) => {
-      setSelectedCategoryId(categoryId);
-      fetchApps(categoryId);
-    },
-    [fetchApps]
-  );
+  // Use server-provided apps directly (filtering is done via URL params on server)
+  const apps = initialApps;
 
   return (
     <div className="flex flex-col w-full px-6 py-8 gap-8">
-      {/* Secondary Tabs */}
-      <SecondaryTab selectedCategoryId={selectedCategoryId} onCategoryChange={handleCategoryChange} />
-
       {/* App Grid */}
       <div className="flex flex-col w-full">
-        {/* Loading State */}
-        {showLoading && (
-          <div className="w-full text-center py-20">
-            <p className="text-neutral-400">{tCommon('loading')}</p>
-          </div>
-        )}
-
         {/* Empty State */}
-        {!showLoading && apps.length === 0 && (
+        {apps.length === 0 && (
           <div className="w-full text-center py-20">
             <p className="text-neutral-400 text-lg">{tCommon('noResults')}</p>
           </div>
         )}
 
         {/* App Grid - 1 col mobile, 2 cols tablet, 4 cols desktop */}
-        {!showLoading && apps.length > 0 && (
+        {apps.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-8">
             {apps.map((app) => (
               <AppItem
