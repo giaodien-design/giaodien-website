@@ -97,7 +97,7 @@ export function SecondaryTab({ selectedCategoryId, onCategoryChange }: Secondary
         <TabsList className="w-full bg-transparent rounded-none p-0 gap-1 h-auto items-start flex">
           <TabsTrigger
             value="all"
-            className="font-normal data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            className="text-xl font-medium data-[state=active]:bg-transparent data-[state=active]:shadow-none"
           >
             {t('secondaryTabs.all')}
           </TabsTrigger>
@@ -105,7 +105,7 @@ export function SecondaryTab({ selectedCategoryId, onCategoryChange }: Secondary
             <TabsTrigger
               key={category.id}
               value={category.id}
-              className="font-normal data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className="text-xl font-medium data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               {getCategoryLabel(category)}
             </TabsTrigger>

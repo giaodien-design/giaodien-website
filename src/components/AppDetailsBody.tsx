@@ -3,12 +3,21 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface AppDetailsBodyProps {
   app: {
+    id: string;
     name: string;
     description?: string | null;
     icon?: string | null;
@@ -26,14 +35,46 @@ interface AppDetailsBodyProps {
       title: string;
       description?: string | null;
       imageUrl: string;
-      screenType?: string | null;
+      flow?: {
+        id: string;
+        name: string;
+        sortOrder: number;
+      } | null;
+      order: number;
     }[];
+    versions?: {
+      id: string;
+      name: string;
+      createdAt: Date | string;
+      _count: {
+        screens: number;
+      };
+    }[];
+    currentVersion?: {
+      id: string;
+      name: string;
+      createdAt: Date | string;
+    } | null;
   };
 }
 
 export function AppDetailsBody({ app }: AppDetailsBodyProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [activeView, setActiveView] = useState<'screens' | 'flows'>('screens');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Handle version switching
+  const handleVersionChange = (versionId: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (versionId) {
+      params.set('version', versionId);
+    } else {
+      params.delete('version');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   // Helper function to validate image URLs
   const getValidImageUrl = (url: string | null | undefined, fallback: string): string => {
@@ -64,7 +105,9 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
         title: screen.title || `Screen ${index + 1}`,
         description: screen.description,
         imageUrl: getValidImageUrl(screen.imageUrl, '/images/sample-img.png'),
-        screenType: screen.screenType || 'Ungrouped'
+        screenType: screen.flow?.name || 'Ungrouped',
+        flow: screen.flow,
+        order: screen.order
       }));
     }
     return [];
@@ -87,21 +130,34 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
       return [];
     }
 
-    const groupsMap = new Map<string, { id: string; name: string; screens: typeof formattedScreens }>();
+    const groupsMap = new Map<string, { id: string; name: string; screens: typeof formattedScreens; sortOrder: number }>();
 
     formattedScreens.forEach((screen) => {
-      const key = screen.screenType || 'Ungrouped';
+      // Use flow name if available, otherwise use 'Ungrouped'
+      const flow = (screen as any).flow;
+      const key = flow?.name || 'Ungrouped';
+      const groupId = flow?.id || 'ungrouped';
+      
       if (!groupsMap.has(key)) {
         groupsMap.set(key, {
-          id: key.toLowerCase().replace(/\s+/g, '-'),
+          id: groupId,
           name: key,
-          screens: []
+          screens: [],
+          sortOrder: flow?.sortOrder ?? 999
         });
       }
       groupsMap.get(key)!.screens.push(screen);
     });
 
-    return Array.from(groupsMap.values());
+    // Sort groups by flow sortOrder if available, then by name
+    return Array.from(groupsMap.values())
+      .sort((a, b) => {
+        if (a.sortOrder !== b.sortOrder) {
+          return a.sortOrder - b.sortOrder;
+        }
+        return a.name.localeCompare(b.name);
+      })
+      .map(({ sortOrder, ...group }) => group); // Remove sortOrder from final result
   }, [formattedScreens]);
 
   const filteredFlowGroups = useMemo(() => {
@@ -163,9 +219,43 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
             </div>
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <div className="flex flex-col gap-3">
-                <h1 className="text-[32px] leading-[1] font-medium tracking-[-0.4px] text-primary-fg truncate">
-                  {app.name}
-                </h1>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-[32px] leading-[1] font-medium tracking-[-0.4px] text-primary-fg truncate">
+                    {app.name}
+                  </h1>
+                  {app.currentVersion && (
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1.5 rounded-[9999px] bg-secondary-bg text-[14px] leading-none text-primary-fg font-medium">
+                        v{app.currentVersion.name}
+                      </span>
+                      {app.versions && app.versions.length > 1 && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-1">
+                              <ChevronDown className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start">
+                            {app.versions.map((version) => (
+                              <DropdownMenuItem
+                                key={version.id}
+                                onClick={() => handleVersionChange(version.id)}
+                                className={app.currentVersion?.id === version.id ? 'bg-secondary-bg' : ''}
+                              >
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-medium">v{version.name}</span>
+                                  <span className="text-xs text-secondary-fg">
+                                    {version._count.screens} screen{version._count.screens !== 1 ? 's' : ''}
+                                  </span>
+                                </div>
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <p className="text-[16px] leading-[1.4] text-secondary-fg">
                   {app.description || 'No description provided'}
                 </p>
@@ -261,9 +351,17 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
                   </div>
                   {group.screens.length ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
-                      {group.screens.map((screen) => (
-                        <ScreenCard key={`${group.id}-${screen.id}`} imageUrl={screen.imageUrl} title={screen.title} />
-                      ))}
+                      {group.screens
+                        .sort((a, b) => {
+                          // Sort by order field if available
+                          if (a.order !== undefined && b.order !== undefined) {
+                            return a.order - b.order;
+                          }
+                          return 0;
+                        })
+                        .map((screen) => (
+                          <ScreenCard key={`${group.id}-${screen.id}`} imageUrl={screen.imageUrl} title={screen.title} />
+                        ))}
                     </div>
                   ) : null}
                 </div>

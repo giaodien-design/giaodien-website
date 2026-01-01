@@ -30,7 +30,7 @@ export default async function FlowDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-primary-bg flex flex-col w-full">
-      <Header hideTabs={true} />
+      <Header />
 
       <div className="flex-1 overflow-y-auto">
         {/* Flow Header Section */}
