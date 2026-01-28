@@ -204,5 +204,26 @@
         }
       }
     }
+  },
+  "checkout": {
+    "orderSuccess": "Order Created Successfully!",
+    "orderId": "Order ID",
+    "paymentInstructions": "Complete Your Payment",
+    "method1": "Scan QR Code",
+    "method2": "Manual Transfer",
+    "waitingPayment": "Waiting for payment...",
+    "accountHolder": "Account Holder",
+    "accountNumber": "Account Number",
+    "amount": "Amount",
+    "transferContent": "Transfer Content",
+    "importantNote": "Important",
+    "keepContentNote": "Please keep the transfer content exactly as \"{content}\" for automatic verification.",
+    "orderInfo": "Order Information",
+    "product": "Product",
+    "total": "Total",
+    "paymentSuccess": "Payment Successful!",
+    "paymentSuccessMessage": "Thank you for your payment. Your order has been confirmed.",
+    "autoChecking": "Auto-checking payment status every 5 seconds...",
+    "redirecting": "Redirecting to homepage in {seconds} seconds..."
   }
 }

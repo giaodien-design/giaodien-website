@@ -22,8 +22,8 @@ export default async function CheckoutPage({
     const order = await prisma.order.create({
       data: {
         userId: session.user.id,
-        total: 3000,
-        name: 'Test Product',
+        total: 29000,
+        name: 'Premium Subscription (1 Month)',
         paymentStatus: 'Unpaid'
       }
     });

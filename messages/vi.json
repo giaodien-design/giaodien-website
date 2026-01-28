@@ -204,5 +204,26 @@
         }
       }
     }
+  },
+  "checkout": {
+    "orderSuccess": "Đặt hàng thành công!",
+    "orderId": "Mã đơn hàng",
+    "paymentInstructions": "Hoàn tất thanh toán",
+    "method1": "Quét mã QR",
+    "method2": "Chuyển khoản thủ công",
+    "waitingPayment": "Đang chờ thanh toán...",
+    "accountHolder": "Chủ tài khoản",
+    "accountNumber": "Số tài khoản",
+    "amount": "Số tiền",
+    "transferContent": "Nội dung chuyển khoản",
+    "importantNote": "Lưu ý quan trọng",
+    "keepContentNote": "Vui lòng giữ nguyên nội dung chuyển khoản \"{content}\" để hệ thống tự động xác nhận.",
+    "orderInfo": "Thông tin đơn hàng",
+    "product": "Sản phẩm",
+    "total": "Tổng cộng",
+    "paymentSuccess": "Thanh toán thành công!",
+    "paymentSuccessMessage": "Cảm ơn bạn đã thanh toán. Đơn hàng của bạn đã được xác nhận.",
+    "autoChecking": "Tự động kiểm tra trạng thái thanh toán mỗi 5 giây...",
+    "redirecting": "Chuyển hướng về trang chủ trong {seconds} giây..."
   }
 }

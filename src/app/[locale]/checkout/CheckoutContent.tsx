@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { usePaymentStatus } from '@/hooks/usePaymentStatus';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/routing';
 
 interface CheckoutContentProps {
   orderId: string;
@@ -14,15 +16,44 @@ interface CheckoutContentProps {
 
 export default function CheckoutContent({ orderId, orderName, orderTotal }: CheckoutContentProps) {
   const t = useTranslations('checkout');
+  const router = useRouter();
   const { status, isPolling } = usePaymentStatus(orderId);
+  const [countdown, setCountdown] = useState(3);
 
   const isPaid = status === 'Paid';
 
+  // Redirect to homepage after successful payment
+  useEffect(() => {
+    if (!isPaid) return;
+
+    // Countdown timer
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Redirect after 3 seconds
+    const redirectTimeout = setTimeout(() => {
+      router.push('/');
+    }, 3000);
+
+    return () => {
+      clearInterval(countdownInterval);
+      clearTimeout(redirectTimeout);
+    };
+  }, [isPaid, router]);
+
+  // Bank info from environment variables
   const bankInfo = {
-    bank: 'Vietinbank',
-    accountNumber: '105870309078',
-    accountName: 'TRAN PHUC THANH',
-    bankCode: 'VIETINBANK'
+    bank: process.env.NEXT_PUBLIC_BANK_NAME || 'ACB',
+    accountNumber: process.env.NEXT_PUBLIC_BANK_ACCOUNT || '',
+    accountName: process.env.NEXT_PUBLIC_BANK_HOLDER_NAME || '',
+    bankCode: process.env.NEXT_PUBLIC_BANK_NAME || 'ACB'
   };
 
   const transferContent = orderId;
@@ -34,7 +65,10 @@ export default function CheckoutContent({ orderId, orderName, orderTotal }: Chec
           <div className="text-center p-8 border-2 border-green-500 rounded-lg mb-6 animate-in fade-in slide-in-from-top">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-green-600 mb-2">✅ {t('paymentSuccess')}</h2>
-            <p className="text-gray-600">{t('paymentSuccessMessage')}</p>
+            <p className="text-gray-600 mb-4">{t('paymentSuccessMessage')}</p>
+            <p className="text-sm text-gray-500">
+              {t('redirecting', { seconds: countdown })}
+            </p>
           </div>
         )}
 

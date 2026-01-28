@@ -72,6 +72,9 @@ export function AppDetailsBody({ app, canAccess = true, accessReason, isLoggedIn
   const [activeView, setActiveView] = useState<'screens' | 'flows'>('screens');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Extract locale from pathname (e.g., /en/app/123 -> en)
+  const locale = pathname.split('/')[1] || 'en';
+
   // Handle version switching
   const handleVersionChange = (versionId: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -380,7 +383,7 @@ export function AppDetailsBody({ app, canAccess = true, accessReason, isLoggedIn
 
                   {/* CTA Button */}
                   <Button asChild size="lg" className="mt-2 gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-orange-200/50">
-                    <Link href="/pricing">
+                    <Link href={`/${locale}/pricing`}>
                       <Crown className="w-4 h-4" />
                       {accessReason === 'LOGIN_REQUIRED' ? 'Log in to Upgrade' : 'Upgrade to Premium'}
                     </Link>

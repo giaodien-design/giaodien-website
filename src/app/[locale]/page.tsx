@@ -12,6 +12,8 @@ import {
   getFlowsWithPreviews
 } from '@/lib/actions';
 import { checkSystemPremiumStatus } from '@/lib/access-control';
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import Loading from './loading';
 
 // View modes for the homepage
@@ -140,10 +142,23 @@ export default async function Home({ searchParams }: PageProps) {
   // Check if system premium is active to show pricing link
   const isSystemPremiumActive = await checkSystemPremiumStatus();
 
+  // Get user subscription status for header badge
+  const session = await auth();
+  let userSubscriptionStatus: 'FREE' | 'PREMIUM' = 'FREE';
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { subscriptionStatus: true }
+    });
+    if (user?.subscriptionStatus === 'PREMIUM') {
+      userSubscriptionStatus = 'PREMIUM';
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col w-full">
       {/* Header */}
-      <Header showPricingLink={isSystemPremiumActive} />
+      <Header showPricingLink={isSystemPremiumActive} userSubscriptionStatus={userSubscriptionStatus} />
 
       {/* Body: FilterBar -> Content Grid */}
       <main className="flex-1 flex flex-col">

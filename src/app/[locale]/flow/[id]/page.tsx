@@ -6,6 +6,8 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { getFlowById } from '@/lib/actions';
 import { checkSystemPremiumStatus } from '@/lib/access-control';
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { ChevronRight, ArrowLeft, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -34,6 +36,19 @@ export default async function FlowDetailPage({ params }: PageProps) {
   // Check if system premium is active to show pricing link
   const isSystemPremiumActive = await checkSystemPremiumStatus();
 
+  // Get user subscription status for header badge
+  const session = await auth();
+  let userSubscriptionStatus: 'FREE' | 'PREMIUM' = 'FREE';
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { subscriptionStatus: true }
+    });
+    if (user?.subscriptionStatus === 'PREMIUM') {
+      userSubscriptionStatus = 'PREMIUM';
+    }
+  }
+
   // Helper function to validate image URLs
   const getValidImageUrl = (url: string | null | undefined, fallback: string): string => {
     if (!url) return fallback;
@@ -52,7 +67,7 @@ export default async function FlowDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white flex flex-col w-full">
-      <Header showPricingLink={isSystemPremiumActive} />
+      <Header showPricingLink={isSystemPremiumActive} userSubscriptionStatus={userSubscriptionStatus} />
 
       <main className="flex-1">
         {/* Hero Header Section */}

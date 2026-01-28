@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useRouter as useNextRouter } from '@/i18n/routing';
-import { Search } from 'lucide-react';
+import { Search, Crown } from 'lucide-react';
 import { Logo } from './Logo';
 import { SearchDrawer } from './SearchDrawer';
 import { LoginPopup } from './LoginPopup';
@@ -16,9 +16,12 @@ interface HeaderProps {
   onLoginOpenChange?: (isOpen: boolean) => void;
   /** Whether to show the Pricing link. Only shown when System Premium is active. */
   showPricingLink?: boolean;
+  /** User's subscription status - passed from server component */
+  userSubscriptionStatus?: 'FREE' | 'PREMIUM';
 }
 
-export function Header({ onLoginOpenChange, showPricingLink = false }: HeaderProps) {
+export function Header({ onLoginOpenChange, showPricingLink = false, userSubscriptionStatus }: HeaderProps) {
+  const isPremiumUser = userSubscriptionStatus === 'PREMIUM';
   const { data: session } = useSession();
   const t = useTranslations('header');
   const router = useNextRouter();
@@ -122,7 +125,7 @@ export function Header({ onLoginOpenChange, showPricingLink = false }: HeaderPro
           {session?.user ? (
             <button
               onClick={handleAvatarClick}
-              className="rounded-full ring-2 ring-transparent transition-all hover:ring-neutral-200 focus:outline-none focus:ring-neutral-300"
+              className="relative rounded-full ring-2 ring-transparent transition-all hover:ring-neutral-200 focus:outline-none focus:ring-neutral-300"
               aria-label="Go to profile"
             >
               <Avatar className="h-8 w-8 cursor-pointer">
@@ -131,6 +134,12 @@ export function Header({ onLoginOpenChange, showPricingLink = false }: HeaderPro
                   {getUserInitials(session.user.name)}
                 </AvatarFallback>
               </Avatar>
+              {/* PRO Badge for Premium Users */}
+              {isPremiumUser && (
+                <span className="absolute -bottom-1 -right-1 flex items-center justify-center w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 ring-2 ring-white">
+                  <Crown className="w-2.5 h-2.5 text-white" />
+                </span>
+              )}
             </button>
           ) : (
             <Button variant="default" size="sm" onClick={handleLoginClick}>
