@@ -106,26 +106,26 @@ function FilterDropdown({ title, paramKey, options, selectedValues, onSelectionC
                   >
                     <div
                       className={cn(
-                        'mr-2 flex h-4 w-4 items-center justify-center rounded border',
+                        'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
                         isSelected
-                          ? 'border-neutral-900 bg-neutral-900 text-white'
+                          ? 'border-emerald-600 bg-emerald-600 text-white'
                           : 'border-neutral-300 bg-white'
                       )}
                     >
                       {isSelected && <Check className="h-3 w-3" />}
                     </div>
-                    <span className="truncate">{option.name}</span>
+                    <span className="truncate text-neutral-900">{option.name}</span>
                   </CommandItem>
                 );
               })}
             </CommandGroup>
           </CommandList>
           {isActive && (
-            <div className="border-t border-neutral-200 p-2">
+            <div className="border-t border-neutral-200 bg-neutral-50 p-2">
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full text-neutral-600 hover:text-neutral-900"
+                className="w-full text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100"
                 onClick={() => {
                   onSelectionChange([]);
                   setOpen(false);
@@ -201,7 +201,7 @@ export function FilterBar({ categories = [], screenTypes = [], uiElements = [], 
   };
 
   return (
-    <div className="sticky top-0 z-40 w-full bg-white border-b border-neutral-200 px-6 py-3">
+    <div className="sticky top-0 z-40 w-full bg-white px-6 py-3">
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
         {/* Categories - always visible */}
         {categories.length > 0 && (

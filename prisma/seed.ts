@@ -150,7 +150,50 @@ async function main() {
     }
   }
 
-  console.log('\n✅ Finished seeding User Flows!');
+  console.log('\n✅ Finished seeding User Flows!\n');
+
+  // ============================================
+  // Seed SystemConfig (Pricing Toggle)
+  // ============================================
+  console.log('Seeding SystemConfig...');
+
+  await prisma.systemConfig.upsert({
+    where: { key: 'PREMIUM_ACTIVE' },
+    update: {
+      value: 'false',
+      description: "Master toggle for Premium features. Set to 'true' to enable paywall.",
+    },
+    create: {
+      key: 'PREMIUM_ACTIVE',
+      value: 'false',
+      description: "Master toggle for Premium features. Set to 'true' to enable paywall.",
+    },
+  });
+  console.log('✓ Upserted SystemConfig: PREMIUM_ACTIVE = false');
+
+  console.log('\n✅ Finished seeding SystemConfig!\n');
+
+  // ============================================
+  // Mark Premium Apps (for testing)
+  // ============================================
+  const premiumAppSlugs = ['grab', 'techcombank'];
+
+  console.log('Marking premium apps...');
+
+  for (const slug of premiumAppSlugs) {
+    const app = await prisma.app.findUnique({ where: { slug } });
+    if (app) {
+      await prisma.app.update({
+        where: { slug },
+        data: { isPremium: true },
+      });
+      console.log(`✓ Marked as premium: ${app.name}`);
+    } else {
+      console.log(`⚠ App not found: ${slug} (skipping)`);
+    }
+  }
+
+  console.log('\n✅ Finished marking premium apps!');
 }
 
 main()

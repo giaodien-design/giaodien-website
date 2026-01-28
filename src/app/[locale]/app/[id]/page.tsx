@@ -27,13 +27,14 @@ export default async function AppDetailPage({ params, searchParams }: PageProps)
   const app = result.data;
 
   return (
-    <div className="min-h-screen bg-primary-bg flex flex-col w-full">
+    <div className="min-h-screen bg-white flex flex-col w-full">
       <Header />
 
-      <div className="flex-1 overflow-y-auto">
+      <main className="flex-1">
         <AppDetailsBody app={app} />
-        <Footer />
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
