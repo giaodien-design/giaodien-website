@@ -133,7 +133,7 @@ export default async function ProfilePage({
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="font-semibold text-neutral-900">
-                            {isPremium ? 'Premium Plan' : 'Free Plan'}
+                            {isPremium ? 'Premium Plan' : 'Starter Plan'}
                           </h4>
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${isPremium ? 'bg-green-100 text-green-700' : 'bg-neutral-200 text-neutral-600'}`}>
                             {isPremium ? 'Active' : 'Current'}

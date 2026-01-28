@@ -141,66 +141,47 @@
     "popular": "Most Popular",
     "free": "Free",
     "plans": {
-      "free": {
-        "name": "Free",
+      "starter": {
+        "name": "Starter",
         "period": "forever",
-        "description": "Perfect for individuals and small projects",
+        "description": "Perfect for exploring and getting started",
         "features": {
-          "0": "Access to basic UI components",
-          "1": "100 screen views per month",
+          "0": "Access to free app screens",
+          "1": "Basic search functionality",
           "2": "Community support",
-          "3": "Basic search functionality"
+          "3": "Limited screen previews"
         },
-        "cta": "Get Started"
+        "cta": "Current Plan"
       },
-      "pro": {
-        "name": "Pro",
+      "premium": {
+        "name": "Premium",
         "period": "month",
-        "description": "Best for professionals and growing teams",
+        "description": "Full access to all premium content",
         "features": {
-          "0": "Unlimited screen views",
-          "1": "Advanced search and filters",
-          "2": "Download high-quality assets",
-          "3": "Priority email support",
-          "4": "Early access to new features",
-          "5": "Commercial use license"
+          "0": "Access to ALL app screens",
+          "1": "Premium app collections",
+          "2": "Advanced search & filters",
+          "3": "Download high-res screens",
+          "4": "Priority support",
+          "5": "Early access to new features"
         },
-        "cta": "Start Free Trial"
-      },
-      "enterprise": {
-        "name": "Enterprise",
-        "priceText": "Custom",
-        "period": "contact us",
-        "description": "For large teams with custom needs",
-        "features": {
-          "0": "Everything in Pro",
-          "1": "Custom integrations",
-          "2": "Dedicated account manager",
-          "3": "24/7 premium support",
-          "4": "Advanced analytics",
-          "5": "Custom SLA"
-        },
-        "cta": "Contact Sales"
+        "cta": "Upgrade Now"
       }
     },
     "faq": {
       "title": "Frequently Asked Questions",
       "questions": {
         "0": {
-          "question": "Can I change my plan later?",
-          "answer": "Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle."
+          "question": "How do I upgrade to Premium?",
+          "answer": "Simply select the Premium plan, scan the QR code, and transfer the exact order amount. The SePay system will automatically activate your account within 30-60 seconds."
         },
         "1": {
-          "question": "What payment methods do you accept?",
-          "answer": "We accept all major credit cards, debit cards, and bank transfers for Enterprise plans."
+          "question": "Do I need to wait for Admin approval?",
+          "answer": "No, our system integrates automatic Webhooks. Your account will be upgraded immediately once the payment is received in the bank account."
         },
         "2": {
-          "question": "Is there a free trial for Pro plan?",
-          "answer": "Yes, we offer a 14-day free trial for the Pro plan with no credit card required."
-        },
-        "3": {
-          "question": "Can I cancel anytime?",
-          "answer": "Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period."
+          "question": "Can I cancel my Premium plan?",
+          "answer": "Your Premium plan is valid for 30 days. After it expires, you can choose to renew or return to the Starter plan."
         }
       }
     }

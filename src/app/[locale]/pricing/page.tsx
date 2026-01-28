@@ -45,11 +45,11 @@ export default async function PricingPage({ params }: PageProps) {
 
   const isUserPremium = userSubscriptionStatus === 'PREMIUM';
 
-  // Define plans with real pricing (Free vs Premium)
+  // Define plans with real pricing (Starter vs Premium)
   const plans = [
     {
-      id: 'free',
-      name: 'Free',
+      id: 'starter',
+      name: 'Starter',
       price: '0',
       period: 'forever',
       description: 'Perfect for exploring and getting started',
@@ -219,7 +219,7 @@ export default async function PricingPage({ params }: PageProps) {
               {t('faq.title')}
             </h2>
             <div className="space-y-6">
-              {[0, 1, 2, 3].map((idx) => (
+              {[0, 1, 2].map((idx) => (
                 <div key={idx} className="border-b border-border-new pb-6">
                   <h3 className="text-lg sm:text-xl font-medium text-primary-foreground mb-2 sm:mb-3">
                     {t(`faq.questions.${idx}.question`)}
