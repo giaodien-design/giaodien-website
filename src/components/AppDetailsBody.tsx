@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, ExternalLink, Search } from 'lucide-react';
+import { ChevronDown, ExternalLink, Search, Lock, Crown } from 'lucide-react';
 
 interface AppDetailsBodyProps {
   app: {
@@ -22,6 +22,7 @@ interface AppDetailsBodyProps {
     description?: string | null;
     icon?: string | null;
     platform?: string | null;
+    isPremium?: boolean;
     category?: {
       id: string;
       name: string;
@@ -56,9 +57,15 @@ interface AppDetailsBodyProps {
       createdAt: Date | string;
     } | null;
   };
+  /** Whether the user can access full content */
+  canAccess?: boolean;
+  /** Reason for access denial */
+  accessReason?: string;
+  /** Whether user is logged in */
+  isLoggedIn?: boolean;
 }
 
-export function AppDetailsBody({ app }: AppDetailsBodyProps) {
+export function AppDetailsBody({ app, canAccess = true, accessReason, isLoggedIn = false }: AppDetailsBodyProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -240,6 +247,12 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
 
               {/* Meta Tags */}
               <div className="flex flex-wrap items-center gap-2">
+                {app.isPremium && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium shadow-sm">
+                    <Crown className="w-3.5 h-3.5" />
+                    Premium
+                  </span>
+                )}
                 {app.category && (
                   <span className="px-3 py-1.5 rounded-full bg-neutral-900 text-white text-sm font-medium">
                     {app.category.name}
@@ -299,7 +312,83 @@ export function AppDetailsBody({ app }: AppDetailsBodyProps) {
       {/* Content Grid */}
       <section className="px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         <div className="max-w-[1800px] mx-auto">
-          {activeView === 'screens' ? (
+          {!canAccess ? (
+            // Premium Locked State
+            <div className="relative">
+              {/* Teaser: Show first 3 screens with blur overlay */}
+              {formattedScreens.length > 0 && (
+                <div className="relative">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 sm:gap-8 lg:gap-10">
+                    {formattedScreens.slice(0, 3).map((screen) => (
+                      <div key={screen.id} className="relative">
+                        <div className="blur-sm pointer-events-none select-none">
+                          <ScreenCard imageUrl={screen.imageUrl} title={screen.title} />
+                        </div>
+                      </div>
+                    ))}
+                    {/* Placeholder cards to show there's more content */}
+                    {formattedScreens.length > 3 && Array.from({ length: Math.min(3, formattedScreens.length - 3) }).map((_, i) => (
+                      <div key={`placeholder-${i}`} className="relative opacity-30">
+                        <div className="blur-md pointer-events-none select-none">
+                          <ScreenCard imageUrl="/images/sample-img.png" title="" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/70 to-white pointer-events-none" />
+                </div>
+              )}
+
+              {/* Premium CTA Overlay */}
+              <div className="relative -mt-32 sm:-mt-40 flex flex-col items-center justify-center py-16 sm:py-20 px-6 text-center">
+                <div className="flex flex-col items-center gap-6 max-w-md">
+                  {/* Icon */}
+                  <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-200">
+                    <Crown className="w-8 h-8 text-white" />
+                  </div>
+
+                  {/* Badge */}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium">
+                    <Lock className="w-3.5 h-3.5" />
+                    Premium Content
+                  </span>
+
+                  {/* Title */}
+                  <h3 className="text-2xl sm:text-3xl font-semibold text-neutral-900">
+                    This is a Premium App
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
+                    {accessReason === 'LOGIN_REQUIRED' 
+                      ? 'Please log in and upgrade to Premium to view all screens and flows in this app.'
+                      : 'Upgrade to Premium to unlock all screens and flows in this app.'}
+                  </p>
+
+                  {/* Stats */}
+                  <div className="flex items-center gap-4 text-sm text-neutral-500">
+                    <span className="flex items-center gap-1.5">
+                      <span className="font-semibold text-neutral-900">{formattedScreens.length}</span> screens
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-neutral-300" />
+                    <span className="flex items-center gap-1.5">
+                      <span className="font-semibold text-neutral-900">{computedFlowGroups.length}</span> flows
+                    </span>
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button asChild size="lg" className="mt-2 gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-orange-200/50">
+                    <Link href="/pricing">
+                      <Crown className="w-4 h-4" />
+                      {accessReason === 'LOGIN_REQUIRED' ? 'Log in to Upgrade' : 'Upgrade to Premium'}
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : activeView === 'screens' ? (
             filteredScreens.length ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 sm:gap-8 lg:gap-10">
                 {filteredScreens.map((screen) => (

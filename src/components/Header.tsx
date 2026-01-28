@@ -14,9 +14,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface HeaderProps {
   onLoginOpenChange?: (isOpen: boolean) => void;
+  /** Whether to show the Pricing link. Only shown when System Premium is active. */
+  showPricingLink?: boolean;
 }
 
-export function Header({ onLoginOpenChange }: HeaderProps) {
+export function Header({ onLoginOpenChange, showPricingLink = false }: HeaderProps) {
   const { data: session } = useSession();
   const t = useTranslations('header');
   const router = useNextRouter();
@@ -104,15 +106,17 @@ export function Header({ onLoginOpenChange }: HeaderProps) {
             <Search className="h-5 w-5" />
           </Button>
 
-          {/* Pricing - Hidden on mobile */}
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handlePricingClick}
-            className="hidden sm:inline-flex"
-          >
-            {t('pricing')}
-          </Button>
+          {/* Pricing - Only shown when System Premium is active, hidden on mobile */}
+          {showPricingLink && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handlePricingClick}
+              className="hidden sm:inline-flex"
+            >
+              {t('pricing')}
+            </Button>
+          )}
 
           {/* User Avatar (Logged In) or Login Button (Logged Out) */}
           {session?.user ? (

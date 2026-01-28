@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { checkSystemPremiumStatus } from '@/lib/access-control';
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -10,6 +11,9 @@ interface PageProps {
 export default async function PricingPage({ params }: PageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'pricing' });
+
+  // Check if system premium is active to show pricing link in header
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
 
   const plans = [
     {
@@ -63,7 +67,7 @@ export default async function PricingPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-primary-bg flex flex-col w-full">
-      <Header />
+      <Header showPricingLink={isSystemPremiumActive} />
 
       <div className="flex-1 overflow-y-auto">
         {/* Pricing Content */}

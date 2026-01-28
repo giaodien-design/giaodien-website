@@ -11,6 +11,7 @@ import {
   getScreens,
   getFlowsWithPreviews
 } from '@/lib/actions';
+import { checkSystemPremiumStatus } from '@/lib/access-control';
 import Loading from './loading';
 
 // View modes for the homepage
@@ -136,10 +137,13 @@ async function HomeContentWrapper({ searchParams }: { searchParams: Promise<Page
 }
 
 export default async function Home({ searchParams }: PageProps) {
+  // Check if system premium is active to show pricing link
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
+
   return (
     <div className="min-h-screen bg-white flex flex-col w-full">
       {/* Header */}
-      <Header />
+      <Header showPricingLink={isSystemPremiumActive} />
 
       {/* Body: FilterBar -> Content Grid */}
       <main className="flex-1 flex flex-col">

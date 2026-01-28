@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { getFlowById } from '@/lib/actions';
+import { checkSystemPremiumStatus } from '@/lib/access-control';
 import { ChevronRight, ArrowLeft, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -30,6 +31,9 @@ export default async function FlowDetailPage({ params }: PageProps) {
   const screens = flow.screens || [];
   const app = flow.app;
 
+  // Check if system premium is active to show pricing link
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
+
   // Helper function to validate image URLs
   const getValidImageUrl = (url: string | null | undefined, fallback: string): string => {
     if (!url) return fallback;
@@ -48,7 +52,7 @@ export default async function FlowDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white flex flex-col w-full">
-      <Header />
+      <Header showPricingLink={isSystemPremiumActive} />
 
       <main className="flex-1">
         {/* Hero Header Section */}

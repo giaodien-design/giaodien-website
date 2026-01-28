@@ -3,6 +3,8 @@ import { getAppById } from '@/lib/actions';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AppDetailsBody } from '@/components/AppDetailsBody';
+import { checkSystemPremiumStatus, checkAppAccess } from '@/lib/access-control';
+import { auth } from '@/lib/auth';
 
 interface PageProps {
   params: Promise<{
@@ -26,12 +28,25 @@ export default async function AppDetailPage({ params, searchParams }: PageProps)
 
   const app = result.data;
 
+  // Check if system premium is active to show pricing link
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
+
+  // Get user session and check app access
+  const session = await auth();
+  const userId = session?.user?.id;
+  const { canAccess, reason } = await checkAppAccess(userId, app.isPremium ?? false);
+
   return (
     <div className="min-h-screen bg-white flex flex-col w-full">
-      <Header />
+      <Header showPricingLink={isSystemPremiumActive} />
 
       <main className="flex-1">
-        <AppDetailsBody app={app} />
+        <AppDetailsBody 
+          app={app} 
+          canAccess={canAccess} 
+          accessReason={reason}
+          isLoggedIn={!!session?.user}
+        />
       </main>
 
       <Footer />

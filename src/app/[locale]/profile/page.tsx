@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { ProfileForm } from './ProfileForm';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { checkSystemPremiumStatus } from '@/lib/access-control';
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -25,9 +26,12 @@ export default async function ProfilePage() {
       .slice(0, 2);
   };
 
+  // Check if system premium is active to show pricing link
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
+
   return (
     <div className="min-h-screen bg-white flex flex-col w-full">
-      <Header />
+      <Header showPricingLink={isSystemPremiumActive} />
 
       <main className="flex-1">
         <div className="container max-w-3xl py-10 px-4 sm:px-6">
