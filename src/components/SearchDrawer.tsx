@@ -217,7 +217,7 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
       <CommandList>
         {/* Loading state - ONLY when actively searching with text */}
         {showLoading && (
-          <div className="py-6 text-center text-sm text-neutral-400">
+          <div className="py-6 text-center text-sm text-neutral-500">
             <div className="animate-pulse">Searching...</div>
           </div>
         )}
@@ -239,7 +239,7 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                     value={`app-${app.name}`}
                     onSelect={() => handleSelectApp(app)}
                   >
-                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-neutral-800">
+                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-neutral-200">
                       {app.icon ? (
                         <Image
                           src={app.icon}
@@ -249,7 +249,7 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <AppWindow className="h-4 w-4 text-neutral-400" />
+                        <AppWindow className="h-4 w-4 text-muted-foreground" />
                       )}
                     </div>
                     <span className="flex-1">{app.name}</span>
@@ -269,8 +269,8 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                       value={`screenType-${screenType.name}`}
                       onSelect={() => handleSelectScreenType(screenType)}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
-                        <Layout className="h-4 w-4 text-blue-400" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 ring-1 ring-blue-200">
+                        <Layout className="h-4 w-4 text-blue-600" />
                       </div>
                       <span className="flex-1">{screenType.name}</span>
                     </CommandItem>
@@ -290,8 +290,8 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                       value={`uiElement-${element.name}`}
                       onSelect={() => handleSelectUIElement(element)}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10">
-                        <Component className="h-4 w-4 text-purple-400" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50 ring-1 ring-purple-200">
+                        <Component className="h-4 w-4 text-purple-600" />
                       </div>
                       <span className="flex-1">{element.name}</span>
                     </CommandItem>
@@ -311,8 +311,8 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                       value={`flow-${flow.name}`}
                       onSelect={() => handleSelectFlow(flow)}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                        <Workflow className="h-4 w-4 text-emerald-400" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 ring-1 ring-emerald-200">
+                        <Workflow className="h-4 w-4 text-emerald-600" />
                       </div>
                       <span className="flex-1">{flow.name}</span>
                     </CommandItem>
@@ -335,7 +335,7 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                     value={`app-${app.name}`}
                     onSelect={() => handleSelectApp(app)}
                   >
-                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-neutral-800">
+                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-neutral-200">
                       {app.icon ? (
                         <Image
                           src={app.icon}
@@ -345,13 +345,13 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <AppWindow className="h-4 w-4 text-neutral-400" />
+                        <AppWindow className="h-4 w-4 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex flex-col">
                       <span>{app.name}</span>
                       {app.description && (
-                        <span className="text-xs text-neutral-500 line-clamp-1">
+                        <span className="text-xs text-muted-foreground line-clamp-1">
                           {app.description}
                         </span>
                       )}
@@ -372,8 +372,8 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                       value={`screenType-${screenType.name}`}
                       onSelect={() => handleSelectScreenType(screenType)}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
-                        <Layout className="h-4 w-4 text-blue-400" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 ring-1 ring-blue-200">
+                        <Layout className="h-4 w-4 text-blue-600" />
                       </div>
                       <span>{screenType.name}</span>
                     </CommandItem>
@@ -393,8 +393,8 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                       value={`uiElement-${element.name}`}
                       onSelect={() => handleSelectUIElement(element)}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10">
-                        <Component className="h-4 w-4 text-purple-400" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50 ring-1 ring-purple-200">
+                        <Component className="h-4 w-4 text-purple-600" />
                       </div>
                       <span>{element.name}</span>
                     </CommandItem>
@@ -414,13 +414,13 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                       value={`flow-${flow.name}`}
                       onSelect={() => handleSelectFlow(flow)}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                        <Workflow className="h-4 w-4 text-emerald-400" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 ring-1 ring-emerald-200">
+                        <Workflow className="h-4 w-4 text-emerald-600" />
                       </div>
                       <div className="flex flex-col">
                         <span>{flow.name}</span>
                         {flow.description && (
-                          <span className="text-xs text-neutral-500 line-clamp-1">
+                          <span className="text-xs text-muted-foreground line-clamp-1">
                             {flow.description}
                           </span>
                         )}
@@ -435,24 +435,24 @@ export function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
       </CommandList>
 
       {/* Footer with keyboard hints */}
-      <div className="border-t border-neutral-800 px-4 py-3">
+      <div className="border-t border-neutral-200 px-4 py-3 bg-neutral-50">
         <div className="flex items-center justify-between text-xs text-neutral-500">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
-              <kbd className="rounded bg-neutral-800 px-1.5 py-0.5 font-mono text-[10px]">↑↓</kbd>
+              <kbd className="rounded bg-neutral-200 px-1.5 py-0.5 font-mono text-[10px] text-neutral-600">↑↓</kbd>
               <span>Navigate</span>
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="rounded bg-neutral-800 px-1.5 py-0.5 font-mono text-[10px]">↵</kbd>
+              <kbd className="rounded bg-neutral-200 px-1.5 py-0.5 font-mono text-[10px] text-neutral-600">↵</kbd>
               <span>Select</span>
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="rounded bg-neutral-800 px-1.5 py-0.5 font-mono text-[10px]">Esc</kbd>
+              <kbd className="rounded bg-neutral-200 px-1.5 py-0.5 font-mono text-[10px] text-neutral-600">Esc</kbd>
               <span>Close</span>
             </span>
           </div>
-          <span className="hidden sm:flex items-center gap-1 text-neutral-600">
-            <kbd className="rounded bg-neutral-800 px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+          <span className="hidden sm:flex items-center gap-1">
+            <kbd className="rounded bg-neutral-200 px-1.5 py-0.5 font-mono text-[10px] text-neutral-600">⌘K</kbd>
             <span>to open anytime</span>
           </span>
         </div>

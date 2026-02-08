@@ -33,6 +33,9 @@ model App {
   screens       Screen[]
   versions      AppVersion[]
   
+  // Premium
+  isPremium     Boolean   @default(false) // To mark high-quality apps
+  
   // Metadata
   isPublished   Boolean   @default(true)
   isRecommended Boolean   @default(false) // For search empty state suggestions
@@ -40,6 +43,7 @@ model App {
   updatedAt     DateTime  @updatedAt
 
   @@index([legacyCategory])
+  @@index([isPremium])
   @@index([categoryId])
   @@index([platform])
   @@index([slug])
@@ -170,6 +174,11 @@ enum Platform {
   WEB
 }
 
+enum SubscriptionStatus {
+  FREE
+  PREMIUM
+}
+
 // NextAuth.js Models
 model User {
   id            String    @id @default(cuid())
@@ -180,9 +189,15 @@ model User {
   accounts      Account[]
   transactions  Transaction[]
   orders        Order[]
+  
+  // Subscription
+  subscriptionStatus  SubscriptionStatus @default(FREE)
+  subscriptionEndDate DateTime?          // When premium expires
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([email])
+  @@index([subscriptionStatus])
 }
 
 model Account {
@@ -257,4 +272,17 @@ model Transaction {
   @@index([transactionDate])
   @@index([gateway])
   @@index([transactionContent])
+}
+
+// System Configuration for global feature toggles
+model SystemConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique // Example: "PREMIUM_ACTIVE"
+  value       String            // Example: "true"/"false"
+  description String?           // Optional description
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([key])
 }

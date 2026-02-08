@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'giaodien-website-image.s3.ap-southeast-1.amazonaws.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'qr.sepay.vn'
       }
     ]
   }

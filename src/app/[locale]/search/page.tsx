@@ -3,6 +3,9 @@ import { getTranslations } from 'next-intl/server';
 import { AppGrid } from '@/components/AppGrid';
 import { Header } from '@/components/Header';
 import { Suspense } from 'react';
+import { checkSystemPremiumStatus } from '@/lib/access-control';
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 interface SearchPageProps {
   params: Promise<{ locale: string }>;
@@ -20,9 +23,25 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const appsResult = await getApps({ search: q, categoryId: type });
   const apps = appsResult.success && appsResult.data ? appsResult.data : [];
 
+  // Check if system premium is active to show pricing link
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
+
+  // Get user subscription status for header badge
+  const session = await auth();
+  let userSubscriptionStatus: 'FREE' | 'PREMIUM' = 'FREE';
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { subscriptionStatus: true }
+    });
+    if (user?.subscriptionStatus === 'PREMIUM') {
+      userSubscriptionStatus = 'PREMIUM';
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header showPricingLink={isSystemPremiumActive} userSubscriptionStatus={userSubscriptionStatus} />
 
       <div className="container mx-auto px-4 md:px-10 lg:px-20 py-8 md:py-12 lg:py-16">
         {/* Search Header */}

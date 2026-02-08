@@ -467,7 +467,7 @@ export async function getUIElements() {
   }
 }
 
-// Get single flow by ID
+// Get single flow by ID with app context
 export async function getFlowById(flowId: string) {
   try {
     // Validate ID format
@@ -478,7 +478,19 @@ export async function getFlowById(flowId: string) {
       where: { id: validatedId },
       include: {
         screens: {
-          orderBy: { createdAt: 'asc' }
+          where: { isPublished: true },
+          orderBy: { order: 'asc' },
+          include: {
+            app: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                icon: true,
+                brandColor: true
+              }
+            }
+          }
         }
       }
     });
@@ -487,7 +499,16 @@ export async function getFlowById(flowId: string) {
       return { success: false, error: 'Flow not found' };
     }
 
-    return { success: true, data: flow };
+    // Extract app info from the first screen (all screens in a flow typically belong to the same app)
+    const app = flow.screens.length > 0 ? flow.screens[0].app : null;
+
+    return {
+      success: true,
+      data: {
+        ...flow,
+        app
+      }
+    };
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error('Invalid ID:', error.issues);

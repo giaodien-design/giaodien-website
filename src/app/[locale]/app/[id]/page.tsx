@@ -3,6 +3,9 @@ import { getAppById } from '@/lib/actions';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AppDetailsBody } from '@/components/AppDetailsBody';
+import { checkSystemPremiumStatus, checkAppAccess } from '@/lib/access-control';
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 interface PageProps {
   params: Promise<{
@@ -26,14 +29,40 @@ export default async function AppDetailPage({ params, searchParams }: PageProps)
 
   const app = result.data;
 
-  return (
-    <div className="min-h-screen bg-primary-bg flex flex-col w-full">
-      <Header />
+  // Check if system premium is active to show pricing link
+  const isSystemPremiumActive = await checkSystemPremiumStatus();
 
-      <div className="flex-1 overflow-y-auto">
-        <AppDetailsBody app={app} />
-        <Footer />
-      </div>
+  // Get user session and check app access
+  const session = await auth();
+  const userId = session?.user?.id;
+  const { canAccess, reason } = await checkAppAccess(userId, app.isPremium ?? false);
+
+  // Get user subscription status for header badge
+  let userSubscriptionStatus: 'FREE' | 'PREMIUM' = 'FREE';
+  if (userId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { subscriptionStatus: true }
+    });
+    if (user?.subscriptionStatus === 'PREMIUM') {
+      userSubscriptionStatus = 'PREMIUM';
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col w-full">
+      <Header showPricingLink={isSystemPremiumActive} userSubscriptionStatus={userSubscriptionStatus} />
+
+      <main className="flex-1">
+        <AppDetailsBody 
+          app={app} 
+          canAccess={canAccess} 
+          accessReason={reason}
+          isLoggedIn={!!session?.user}
+        />
+      </main>
+
+      <Footer />
     </div>
   );
 }

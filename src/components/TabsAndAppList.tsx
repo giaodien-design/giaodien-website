@@ -34,9 +34,9 @@ export function TabsAndAppList({ initialApps }: TabsAndAppListProps) {
   const apps = initialApps;
 
   return (
-    <div className="flex flex-col w-full px-6 py-8 gap-8">
+    <div className="flex flex-col w-full px-4 sm:px-8 lg:px-12 py-10 sm:py-12 lg:py-16">
       {/* App Grid */}
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full max-w-[1800px] mx-auto">
         {/* Empty State */}
         {apps.length === 0 && (
           <div className="w-full text-center py-20">
@@ -44,9 +44,9 @@ export function TabsAndAppList({ initialApps }: TabsAndAppListProps) {
           </div>
         )}
 
-        {/* App Grid - 1 col mobile, 2 cols tablet, 4 cols desktop */}
+        {/* App Grid - Spacious Gallery Layout */}
         {apps.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
             {apps.map((app) => (
               <AppItem
                 key={app.id}

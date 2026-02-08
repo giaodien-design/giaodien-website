@@ -3,9 +3,11 @@
 import { useState, useTransition } from 'react';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Loader2, LogOut, Save } from 'lucide-react';
+import { Loader2, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { updateProfile } from '@/lib/actions';
 
 interface ProfileFormProps {
@@ -48,93 +50,101 @@ export function ProfileForm({ userId, initialName, initialEmail }: ProfileFormPr
   const hasChanges = name !== initialName || email !== initialEmail;
 
   return (
-    <div className="space-y-8">
-      {/* Edit Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
+    <div className="space-y-10">
+      {/* Profile Section */}
+      <section>
+        <div className="space-y-1 mb-6">
+          <h3 className="text-lg font-semibold text-neutral-900">Profile</h3>
+          <p className="text-sm text-muted-foreground">
+            Update your personal information.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Field */}
           <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-neutral-700">
-              Name
-            </label>
+            <Label htmlFor="name">Name</Label>
             <Input
               id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
-              className="w-full"
+              className="max-w-md"
             />
           </div>
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
-              Email
-            </label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full"
+              className="max-w-md"
             />
-            <p className="text-xs text-neutral-500">
-              Note: Changing your email will update your login email.
+            <p className="text-xs text-muted-foreground">
+              Changing your email will update your login credentials.
             </p>
           </div>
+
+          {/* Message */}
+          {message && (
+            <div
+              className={`max-w-md rounded-lg px-4 py-3 text-sm ${
+                message.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-red-50 text-red-700 border border-red-200'
+              }`}
+            >
+              {message.text}
+            </div>
+          )}
+
+          {/* Save Button */}
+          <Button type="submit" disabled={isPending || !hasChanges}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
+          </Button>
+        </form>
+      </section>
+
+      <Separator />
+
+      {/* Danger Zone */}
+      <section>
+        <div className="space-y-1 mb-6">
+          <h3 className="text-lg font-semibold text-neutral-900">Danger Zone</h3>
+          <p className="text-sm text-muted-foreground">
+            Irreversible and destructive actions.
+          </p>
         </div>
 
-        {/* Message */}
-        {message && (
-          <div
-            className={`rounded-lg px-4 py-3 text-sm ${
-              message.type === 'success'
-                ? 'bg-emerald-50 text-emerald-700'
-                : 'bg-red-50 text-red-700'
-            }`}
-          >
-            {message.text}
+        <div className="flex items-center justify-between max-w-md rounded-lg border border-red-200 bg-red-50/50 p-4">
+          <div className="space-y-0.5">
+            <p className="text-sm font-medium text-neutral-900">Log out of your account</p>
+            <p className="text-xs text-muted-foreground">
+              You will be redirected to the homepage.
+            </p>
           </div>
-        )}
-
-        {/* Save Button */}
-        <Button
-          type="submit"
-          disabled={isPending || !hasChanges}
-          className="w-full sm:w-auto"
-        >
-          {isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="mr-2 h-4 w-4" />
-              Save Changes
-            </>
-          )}
-        </Button>
-      </form>
-
-      {/* Divider */}
-      <div className="border-t border-neutral-200" />
-
-      {/* Logout Section */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium text-neutral-700">Account Actions</h3>
-        <Button
-          variant="destructive"
-          onClick={handleLogout}
-          className="w-full sm:w-auto"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Log out
-        </Button>
-      </div>
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Log out
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }
-

@@ -141,68 +141,70 @@
     "popular": "Phổ Biến Nhất",
     "free": "Miễn phí",
     "plans": {
-      "free": {
-        "name": "Miễn phí",
+      "starter": {
+        "name": "Starter",
         "period": "mãi mãi",
-        "description": "Hoàn hảo cho cá nhân và dự án nhỏ",
+        "description": "Hoàn hảo để khám phá và bắt đầu",
         "features": {
-          "0": "Truy cập các giao diện cơ bản",
-          "1": "100 lượt xem màn hình mỗi tháng",
+          "0": "Truy cập các màn hình miễn phí",
+          "1": "Tìm kiếm cơ bản",
           "2": "Hỗ trợ cộng đồng",
-          "3": "Tìm kiếm cơ bản"
+          "3": "Xem trước màn hình giới hạn"
         },
-        "cta": "Bắt Đầu"
+        "cta": "Gói Hiện Tại"
       },
-      "pro": {
-        "name": "Pro",
+      "premium": {
+        "name": "Premium",
         "period": "tháng",
-        "description": "Tốt nhất cho chuyên gia và nhóm đang phát triển",
+        "description": "Truy cập đầy đủ tất cả nội dung cao cấp",
         "features": {
-          "0": "Xem màn hình không giới hạn",
-          "1": "Tìm kiếm và lọc nâng cao",
-          "2": "Tải xuống tài nguyên chất lượng cao",
-          "3": "Hỗ trợ email ưu tiên",
-          "4": "Truy cập sớm tính năng mới",
-          "5": "Giấy phép sử dụng thương mại"
+          "0": "Truy cập TẤT CẢ màn hình",
+          "1": "Bộ sưu tập ứng dụng Premium",
+          "2": "Tìm kiếm & lọc nâng cao",
+          "3": "Tải xuống ảnh chất lượng cao",
+          "4": "Hỗ trợ ưu tiên",
+          "5": "Truy cập sớm tính năng mới"
         },
-        "cta": "Dùng Thử Miễn Phí"
-      },
-      "enterprise": {
-        "name": "Enterprise",
-        "priceText": "Tùy chỉnh",
-        "period": "liên hệ",
-        "description": "Cho các nhóm lớn với nhu cầu đặc biệt",
-        "features": {
-          "0": "Tất cả tính năng Pro",
-          "1": "Tích hợp tùy chỉnh",
-          "2": "Quản lý tài khoản chuyên trách",
-          "3": "Hỗ trợ cao cấp 24/7",
-          "4": "Phân tích nâng cao",
-          "5": "SLA tùy chỉnh"
-        },
-        "cta": "Liên Hệ Sales"
+        "cta": "Nâng Cấp Ngay"
       }
     },
     "faq": {
       "title": "Câu Hỏi Thường Gặp",
       "questions": {
         "0": {
-          "question": "Tôi có thể thay đổi gói sau này không?",
-          "answer": "Có, bạn có thể nâng cấp hoặc hạ cấp gói bất cứ lúc nào. Thay đổi sẽ có hiệu lực trong chu kỳ thanh toán tiếp theo."
+          "question": "Làm thế nào để nâng cấp lên Premium?",
+          "answer": "Bạn chỉ cần chọn gói Premium, quét mã QR và chuyển khoản chính xác nội dung đơn hàng. Hệ thống SePay sẽ tự động kích hoạt tài khoản của bạn sau 30-60 giây."
         },
         "1": {
-          "question": "Bạn chấp nhận phương thức thanh toán nào?",
-          "answer": "Chúng tôi chấp nhận tất cả thẻ tín dụng, thẻ ghi nợ chính và chuyển khoản ngân hàng cho gói Enterprise."
+          "question": "Tôi có cần chờ Admin duyệt thanh toán không?",
+          "answer": "Không, hệ thống của chúng tôi tích hợp Webhook tự động. Tài khoản sẽ được nâng cấp ngay khi tiền vào tài khoản ngân hàng."
         },
         "2": {
-          "question": "Có dùng thử miễn phí cho gói Pro không?",
-          "answer": "Có, chúng tôi cung cấp dùng thử miễn phí 14 ngày cho gói Pro mà không cần thẻ tín dụng."
-        },
-        "3": {
-          "question": "Tôi có thể hủy bất cứ lúc nào không?",
-          "answer": "Có, bạn có thể hủy đăng ký bất cứ lúc nào. Bạn sẽ tiếp tục được truy cập đến cuối chu kỳ thanh toán."
+          "question": "Tôi có thể hủy gói Premium không?",
+          "answer": "Gói Premium của bạn có thời hạn 30 ngày. Sau khi hết hạn, bạn có thể chọn gia hạn tiếp hoặc quay về gói Starter."
         }
       }
     }
+  },
+  "checkout": {
+    "orderSuccess": "Đặt hàng thành công!",
+    "orderId": "Mã đơn hàng",
+    "paymentInstructions": "Hoàn tất thanh toán",
+    "method1": "Quét mã QR",
+    "method2": "Chuyển khoản thủ công",
+    "waitingPayment": "Đang chờ thanh toán...",
+    "accountHolder": "Chủ tài khoản",
+    "accountNumber": "Số tài khoản",
+    "amount": "Số tiền",
+    "transferContent": "Nội dung chuyển khoản",
+    "importantNote": "Lưu ý quan trọng",
+    "keepContentNote": "Vui lòng giữ nguyên nội dung chuyển khoản \"{content}\" để hệ thống tự động xác nhận.",
+    "orderInfo": "Thông tin đơn hàng",
+    "product": "Sản phẩm",
+    "total": "Tổng cộng",
+    "paymentSuccess": "Thanh toán thành công!",
+    "paymentSuccessMessage": "Cảm ơn bạn đã thanh toán. Đơn hàng của bạn đã được xác nhận.",
+    "autoChecking": "Tự động kiểm tra trạng thái thanh toán mỗi 5 giây...",
+    "redirecting": "Chuyển hướng về trang chủ trong {seconds} giây..."
   }
 }
