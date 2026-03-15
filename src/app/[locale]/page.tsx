@@ -55,7 +55,7 @@ const getViewMode = (params: {
   return 'APP';
 };
 
-async function HomeContentWrapper({ searchParams }: { searchParams: Promise<PageProps['searchParams']> }) {
+async function HomeContentWrapper({ searchParams }: { searchParams: PageProps['searchParams'] }) {
   const params = await searchParams;
 
   // Parse search params into arrays for multi-select
